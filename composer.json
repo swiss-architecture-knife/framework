@@ -1,0 +1,94 @@
+{
+    "name": "swark/framework",
+    "type": "project",
+    "description": "swark - Swiss Architecture Knife.",
+    "keywords": ["swark", "software", "system", "architecture", "documentation", "framework"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "composer/semver": "^3.4",
+        "filament/filament": "^3.2",
+        "guava/filament-nested-resources": "^1.2",
+        "guzzlehttp/guzzle": "^7.2",
+        "jawira/plantuml": "^1.2024",
+        "jawira/plantuml-to-image": "^1.0",
+        "laravel/framework": "^v11.22.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.9",
+        "league/commonmark": "^2.4",
+        "league/csv": "^9.0",
+        "maatwebsite/excel": "^3.1",
+        "maclof/kubernetes-client": "^0.31.0",
+        "marcj/topsort": "^2.0",
+        "spatie/laravel-navigation": "^1.2",
+        "spatie/laravel-package-tools": "^1.19",
+        "staudenmeir/eloquent-has-many-deep": "^1.7",
+        "symfony/yaml": "^7.0",
+        "tormjens/eventy": "^0.9.3",
+        "dreitier/inspecting-k8s-lib": "@dev"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.9.1",
+        "laravel/pint": "^1.0",
+        "mockery/mockery": "^1.4.4",
+        "orchestra/testbench-core": "^9.9.4",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^10.5.35|^11.3.6|^12.0.1"
+    },
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "Swark\\": "src/",
+            "Dreitier\\Alm\\": "alm-lib/src/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Swark\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+        ],
+        "post-update-cmd": [
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TorMorten\\Eventy\\EventServiceProvider",
+                "TorMorten\\Eventy\\EventBladeServiceProvider",
+                "Maatwebsite\\Excel\\ExcelServiceProvider",
+                "Filament\\FilamentServiceProvider",
+                "Swark\\Management\\AdminPanelProvider",
+                "Swark\\Management\\CompliancePanelProvider",
+                "Swark\\SwarkServiceProvider",
+                "Swark\\EventServiceProvider"
+            ],
+            "aliases": {
+                "Eventy": "TorMorten\\Eventy\\Facades\\Events"
+            },
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

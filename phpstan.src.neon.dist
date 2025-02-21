@@ -1,0 +1,14 @@
+parameters:
+    level: 1
+    paths:
+        - src
+    excludePaths:
+        - src\\Services\\Alm
+    ignoreErrors:
+        - "#\\(void\\) is used#"
+        - "#Access to an undefined property#"
+        - "#Call to an undefined method#"
+        - "#Call to an undefined static method#"
+        - "#Class [a-zA-Z0-9\\\\_]+ not found.#"
+        - "#Instantiated class [a-zA-Z0-9\\\\_]+ not found.#"
+        - "#Unsafe usage of new static#"

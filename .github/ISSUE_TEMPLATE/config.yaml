@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Feature request
+    url: https://github.com/swiss-architecture-knife/framework/discussions
+    about: 'For ideas or feature requests, start a new discussion'
+  - name: Documentation issue
+    url: https://github.com/swiss-architecture-knife/docs
+    about: For documentation issues, open a pull request at the laravel/docs repository

@@ -1,0 +1,25 @@
+<?php
+declare(strict_types=1);
+
+namespace Swark\Ingester\Model;
+
+enum StatusFlag
+{
+    case ITEMS_CSV_PRECONDITION_FAILED;
+    case ITEMS_CSV_MISSING;
+    case EXCEL_CSV_MISSING;
+    case ITEMS_CSV_INVALID;
+    case ITEMS_CSV_EMPTY;
+    case OPTIONS_YAML_MISSING;
+    case OPTIONS_YAML_INVALID;
+    case INVALID_MAPPED_MODEL;
+    case INVALID_CONVERTER;
+    case DEPENDING_STAMDATA_MODEL_MISSING;
+    case DEPENDING_STAMDATA_CYCLE_DETECTED;
+    case COLUMN_MAPPER_INVALID;
+    case REFERENCE_MAPPER_INVALID;
+    case NO_ITEMS;
+    case UNKNOWN_ERROR;
+
+    case INVALID_DATA_PROVIDED;
+}
