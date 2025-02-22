@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.1 - 2025-02-22
+
+* nothing of interest this time
+
 ## v0.1.0 - 2025-02-21
 
 * nothing of interest this time
