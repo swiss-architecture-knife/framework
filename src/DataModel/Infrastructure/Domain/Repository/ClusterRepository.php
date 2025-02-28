@@ -27,7 +27,7 @@ FROM
 LEFT JOIN `release` r ON c.target_release_id = r.id
 LEFT JOIN software sw ON r.software_id = sw.id
 LEFT JOIN cluster_member cm ON c.id = cm.cluster_id
-GROUP by c.id
+GROUP by c.id, c.name, sw.id, sw.name, r.id, r.version
 ORDER BY c.name
 SQL;
         $rows = DB::select($query);
