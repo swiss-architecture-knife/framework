@@ -72,7 +72,7 @@ left to right direction
             </tr>
             </thead>
             <tbody>
-            @foreach ($root as $managed_service_provider)
+            @forelse ($root as $managed_service_provider)
                 @if($managed_service_provider['msp'])
                     <tr>
                         <td colspan="5"><strong>{{ $managed_service_provider['msp']['name'] }}</strong></td>
@@ -113,7 +113,9 @@ left to right direction
                         @endforeach
                     @endforeach
                 @endforeach
-            @endforeach
+            @empty
+                <x-swark::empty-table cols="5" />
+            @endforelse
             </tbody>
         </table>
     </x-swark-chapter>
