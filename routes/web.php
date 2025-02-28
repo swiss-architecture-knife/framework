@@ -35,7 +35,7 @@ Route::name('swark.')
                 Route::prefix('strategy')
                     ->name('strategy.')->group(function () {
                         Route::get('/big-picture', [StrategyController::class, 'bigPicture'])->name('big-picture');
-                        Route::get('/', [StrategyController::class, 'index'])->name('index');
+                        Route::get('/overview', [StrategyController::class, 'index'])->name('index');
                         Route::get('/findings', [StrategyController::class, 'findings'])->name('findings');
                         Route::get('/kpi', [StrategyController::class, 'kpi'])->name('kpi');
                     });
