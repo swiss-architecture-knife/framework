@@ -253,7 +253,7 @@ class SwarkServiceProvider extends PackageServiceProvider
                         ->add(__('swark::g.nav.side.infrastructure.overview'), route('swark.infrastructure.index'))
                         ->add(__('swark::g.nav.side.infrastructure.baremetal'), route('swark.infrastructure.baremetal.index'))
                         ->add(__('swark::g.nav.side.infrastructure.cluster'), route('swark.infrastructure.cluster.index'))
-                        ->add(__('swark::g.nav.side.infrastructure.resources'), '/infrastructure/resource', function (Section $section) {
+                        ->addIf(fn() => ResourceType::inUse()->count() > 0, __('swark::g.nav.side.infrastructure.resources'), '#', function (Section $section) {
                             $resources = ResourceType::inUse()->get()->each(fn(ResourceType $item) => $section->add($item->name, route('swark.infrastructure.resource.index', $item)));
                         })
                     )
