@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
-use Swark\DataModel\Ecosystem\Domain\Entity\Organization;
+use Swark\DataModel\Business\Domain\Entity\Organization;
 use Swark\DataModel\Enterprise\Domain\Entity\Criticality;
 use Swark\DataModel\Enterprise\Domain\Entity\System;
 use Swark\DataModel\Enterprise\Domain\Entity\Zone;

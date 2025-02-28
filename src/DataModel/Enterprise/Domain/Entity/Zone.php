@@ -5,7 +5,7 @@ namespace Swark\DataModel\Enterprise\Domain\Entity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
-use Swark\DataModel\Ecosystem\Domain\Entity\Actor;
+use Swark\DataModel\Business\Domain\Entity\Actor;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\AssociatedWithOrganizations;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasDescription;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasName;

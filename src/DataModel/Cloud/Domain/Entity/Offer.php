@@ -4,7 +4,7 @@ namespace Swark\DataModel\Cloud\Domain\Entity;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Swark\DataModel\Ecosystem\Domain\Entity\Organization;
+use Swark\DataModel\Business\Domain\Entity\Organization;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasName;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasScompId;
 use Swark\DataModel\Software\Domain\Entity\Software;

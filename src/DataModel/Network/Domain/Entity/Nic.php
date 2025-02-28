@@ -5,7 +5,7 @@ namespace Swark\DataModel\Network\Domain\Entity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Swark\DataModel\Ecosystem\Domain\Entity\Organization;
+use Swark\DataModel\Business\Domain\Entity\Organization;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasName;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\IpAddressAssignable;
 

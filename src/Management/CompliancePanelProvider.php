@@ -26,7 +26,7 @@ class CompliancePanelProvider extends PanelProvider
     {
         return $panel
             ->id('compliance')
-            ->path('admin-compliance')
+            ->path('admin/compliance')
             ->colors([
                 'primary' => Color::Amber,
             ])

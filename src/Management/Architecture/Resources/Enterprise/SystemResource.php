@@ -10,13 +10,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\ActorIncomingRelationManager;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\C4ArchitectureRelationManager;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\ServiceOutgoingRelationManager;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\SoftwareIncomingRelationManager;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\SystemIncomingRelationManager;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\SystemOutgoingRelationManager;
 use Swark\DataModel\Enterprise\Domain\Entity\System;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\ActorIncomingRelationManager;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\C4ArchitectureRelationManager;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\ServiceOutgoingRelationManager;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\SoftwareIncomingRelationManager;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\SystemIncomingRelationManager;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\SystemOutgoingRelationManager;
 use Swark\Management\Resources\Shared;
 
 class SystemResource extends Resource

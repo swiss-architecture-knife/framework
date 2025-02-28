@@ -68,8 +68,9 @@
                 "TorMorten\\Eventy\\EventBladeServiceProvider",
                 "Maatwebsite\\Excel\\ExcelServiceProvider",
                 "Filament\\FilamentServiceProvider",
-                "Swark\\Management\\AdminPanelProvider",
+                "Swark\\DataModel\\Business\\UI\\BusinessPanelProvider",
                 "Swark\\Management\\CompliancePanelProvider",
+                "Swark\\Management\\AdminPanelProvider",
                 "Swark\\SwarkServiceProvider",
                 "Swark\\EventServiceProvider"
             ],

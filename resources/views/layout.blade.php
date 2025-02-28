@@ -37,7 +37,7 @@
 
     <nav class="navbar navbar-expand-md navbar-dark bd-navbar">
         <div class="container-xxl flex-wrap flex-md-nowrap">
-            <a class="navbar-brand" href="#">{{ config('app.name') }}</a>
+            <a class="navbar-brand" href="{{ route('swark.strategy.index') }}">{{ config('app.name') }}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

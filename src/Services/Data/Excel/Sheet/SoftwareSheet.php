@@ -5,7 +5,7 @@ namespace Swark\Services\Data\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromGenerator;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Swark\DataModel\Ecosystem\Domain\Entity\Organization;
+use Swark\DataModel\Business\Domain\Entity\Organization;
 use Swark\DataModel\Software\Domain\Entity\Software;
 use Swark\Services\Data\Excel\Column;
 use Swark\Services\Data\Excel\Header;

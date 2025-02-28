@@ -3,7 +3,7 @@
 namespace Swark\DataModel\Kernel\Infrastructure\Aspects;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Swark\DataModel\Ecosystem\Domain\Entity\Organization;
+use Swark\DataModel\Business\Domain\Entity\Organization;
 
 trait AssociatedWithOrganizations
 {

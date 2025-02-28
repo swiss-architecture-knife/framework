@@ -3,7 +3,7 @@
 namespace Swark\DataModel\Kernel\Infrastructure\Aspects;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Swark\DataModel\Ecosystem\Domain\Entity\Actor;
+use Swark\DataModel\Business\Domain\Entity\Actor;
 use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
 use Swark\DataModel\Enterprise\Domain\Entity\System;
 use Swark\DataModel\Software\Domain\Entity\Component;

@@ -10,8 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Swark\DataModel\Business\UI\OrganizationResource\RelationManagers\AssociatedWithOrganizationsRelationManager;
 use Swark\DataModel\Network\Domain\Entity\Vlan;
-use Swark\Management\Architecture\Resources\Ecosystem\OrganizationResource\RelationManagers\AssociatedWithOrganizationsRelationManager;
 use Swark\Management\Architecture\Resources\Infrastructure\VlanResource\RelationManagers\BelongingIpNetworksRelationManager;
 use Swark\Management\Resources\Shared;
 

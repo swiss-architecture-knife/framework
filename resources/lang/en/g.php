@@ -2,8 +2,9 @@
 return [
     'nav' => [
         'top' => [
-            'start' => 'Start',
-            'admin' => 'Administration',
+            'business' => 'Business administration',
+            'admin' => 'IT administration',
+
         ],
         'side' => [
             'strategy' => [

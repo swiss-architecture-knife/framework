@@ -3,17 +3,17 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Swark\DataModel\Cloud\Entity\Account;
-use Swark\DataModel\Cloud\Entity\AvailabilityZone;
-use Swark\DataModel\Cloud\Entity\ManagedBaremetal;
-use Swark\DataModel\Cloud\Entity\Offer;
-use Swark\DataModel\Cloud\Entity\Region;
+use Swark\DataModel\Business\Domain\Entity\Organization;
+use Swark\DataModel\Cloud\Domain\Entity\Account;
+use Swark\DataModel\Cloud\Domain\Entity\AvailabilityZone;
+use Swark\DataModel\Cloud\Domain\Entity\ManagedBaremetal;
+use Swark\DataModel\Cloud\Domain\Entity\Offer;
+use Swark\DataModel\Cloud\Domain\Entity\Region;
 use Swark\DataModel\Deployment\Domain\Entity\ApplicationInstance;
 use Swark\DataModel\Deployment\Domain\Entity\Deployment;
 use Swark\DataModel\Deployment\Domain\Entity\Stage;
 use Swark\DataModel\Ecosystem\Domain\Entity\ArchitectureType;
 use Swark\DataModel\Ecosystem\Domain\Entity\NamingType;
-use Swark\DataModel\Ecosystem\Domain\Entity\Organization;
 use Swark\DataModel\Ecosystem\Domain\Entity\ProtocolStack;
 use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
 use Swark\DataModel\Ecosystem\Domain\Entity\Technology;

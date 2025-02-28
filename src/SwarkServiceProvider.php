@@ -234,7 +234,7 @@ class SwarkServiceProvider extends PackageServiceProvider
         return function (View $view) {
             $view->with('top_navigation',
                 $this->newNavigation()
-                    ->add(__('swark::g.nav.top.start'), route('swark.strategy.index'))
+                    ->add(__('swark::g.nav.top.business'), route('filament.business.pages.dashboard'))
                     ->add(__('swark::g.nav.top.admin'), route('filament.admin.pages.dashboard'))
                     ->tree()
             )->with('side_navigation',

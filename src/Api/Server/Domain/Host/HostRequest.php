@@ -4,7 +4,7 @@ namespace Swark\Api\Server\Domain\Host;
 
 use Swark\Api\Server\Internal\BaseRequest;
 use Swark\Api\Server\Internal\NamingContext;
-use Swark\DataModel\Ecosystem\Domain\Entity\Organization;
+use Swark\DataModel\Business\Domain\Entity\Organization;
 use Swark\DataModel\Infrastructure\Domain\Entity\Baremetal;
 use Swark\DataModel\Infrastructure\Domain\Entity\Host;
 use Swark\DataModel\Software\Domain\Entity\Release;

@@ -12,8 +12,8 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Swark\DataModel\Business\UI\OrganizationResource\RelationManagers\AssociatedWithOrganizationsRelationManager;
 use Swark\DataModel\Network\Domain\Entity\IpNetwork;
-use Swark\Management\Architecture\Resources\Ecosystem\OrganizationResource\RelationManagers\AssociatedWithOrganizationsRelationManager;
 use Swark\Management\Resources\Shared;
 
 class IpNetworkResource extends Resource

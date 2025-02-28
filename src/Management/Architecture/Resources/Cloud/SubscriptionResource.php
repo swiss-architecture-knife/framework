@@ -10,10 +10,10 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Swark\DataModel\Business\UI\OrganizationResource\RelationManagers\AssociatedWithOrganizationsRelationManager;
 use Swark\DataModel\Cloud\Domain\Entity\Offer;
 use Swark\DataModel\Cloud\Domain\Entity\Subscription;
 use Swark\DataModel\Software\Domain\Entity\Release;
-use Swark\Management\Architecture\Resources\Ecosystem\OrganizationResource\RelationManagers\AssociatedWithOrganizationsRelationManager;
 use Swark\Management\Architecture\Resources\Infrastructure\ClusterResource\RelationManagers\ResourcesRelationManager;
 use Swark\Management\Resources\Shared;
 

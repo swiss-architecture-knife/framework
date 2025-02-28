@@ -10,12 +10,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\C4ArchitectureRelationManager;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\ComponentIncomingRelationManager;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\ServiceIncomingRelationManager;
+use Swark\DataModel\Business\UI\ActorResource\RelationManagers\SoftwareIncomingRelationManager;
 use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
 use Swark\DataModel\Ecosystem\Domain\Model\TechnologyVersionName;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\C4ArchitectureRelationManager;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\ComponentIncomingRelationManager;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\ServiceIncomingRelationManager;
-use Swark\Management\Architecture\Resources\Ecosystem\ActorResource\RelationManagers\SoftwareIncomingRelationManager;
 use Swark\Management\Resources\Shared;
 
 class ResourceTypeResource extends Resource

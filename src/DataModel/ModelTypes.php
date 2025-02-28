@@ -3,12 +3,12 @@
 namespace Swark\DataModel;
 
 use Swark\DataModel\Action\Domain\Entity\Action;
+use Swark\DataModel\Business\Domain\Entity\Actor;
 use Swark\DataModel\Cloud\Domain\Entity\Subscription;
 use Swark\DataModel\Compliance\Domain\Entity\Control;
 use Swark\DataModel\Compliance\Domain\Entity\Finding;
 use Swark\DataModel\Deployment\Domain\Entity\ApplicationInstance;
 use Swark\DataModel\Deployment\Domain\Entity\Deployment;
-use Swark\DataModel\Ecosystem\Domain\Entity\Actor;
 use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
 use Swark\DataModel\Enterprise\Domain\Entity\System;
 use Swark\DataModel\Enterprise\Domain\Entity\Zone;
