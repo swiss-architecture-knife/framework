@@ -59,7 +59,7 @@
             <x-swark::criticality :range="$criticality_range" :position="$finding->criticality->position"
                                   :name="$finding->criticality->name"/>
 
-        <x-swark::status :status="$finding->status" />
+            <x-swark::status :status="$finding->status"/>
 
         @endforeach
     </x-swark-chapter>
@@ -75,20 +75,22 @@
             </tr>
             </thead>
             <tbody>
-            @foreach(collect($findings)->values()->flatMap(function(object $array) { return $array->actions; })->sortBy(['begin_at', 'asc']) as $action)
+            @forelse(collect($findings)->values()->flatMap(function(object $array) { return $array->actions; })->sortBy(['begin_at', 'asc']) as $action)
                 <tr>
                     <td>{{ $action->name }}</td>
                     <td>
-                        <x-swark::status :status="$action->status" />
+                        <x-swark::status :status="$action->status"/>
                     </td>
                     <td>
-                        <x-swark::date :date="$action->begin_at" />
+                        <x-swark::date :date="$action->begin_at"/>
                     </td>
                     <td>
-                        <x-swark::date :date="$action->end_at" />
+                        <x-swark::date :date="$action->end_at"/>
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                <x-swark::empty-table cols="4" />
+            @endforelse
             </tbody>
         </table>
     </x-swark-chapter>
