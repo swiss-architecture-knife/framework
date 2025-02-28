@@ -4,7 +4,7 @@ return [
         'top' => [
             'business' => 'Business administration',
             'admin' => 'IT administration',
-
+            'compliance' => 'Compliance',
         ],
         'side' => [
             'strategy' => [

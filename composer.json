@@ -69,7 +69,7 @@
                 "Maatwebsite\\Excel\\ExcelServiceProvider",
                 "Filament\\FilamentServiceProvider",
                 "Swark\\DataModel\\Business\\UI\\BusinessPanelProvider",
-                "Swark\\Management\\CompliancePanelProvider",
+                "Swark\\DataModel\\Compliance\\UI\\CompliancePanelProvider",
                 "Swark\\Management\\AdminPanelProvider",
                 "Swark\\SwarkServiceProvider",
                 "Swark\\EventServiceProvider"
