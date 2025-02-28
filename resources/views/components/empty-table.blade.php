@@ -3,6 +3,8 @@
 ])
 <tr>
     <td colspan="{{ $cols }}">
-        <x-swark::alert>{{ __('swark::g.table.empty') }}</x-swark::alert>
+        <x-swark::alert>{{ __('swark::g.table.empty') }}
+            {{ $slot }}
+        </x-swark::alert>
     </td>
 </tr>
