@@ -99,8 +99,12 @@ class StrategyController extends BaseController
 
     public function kpi()
     {
+        $strategy = $this->getStrategy();
+        $period = Period::first();
+        $kpis = $strategy && $period ? $this->strategyRepository->findKpisByStrategyAndPeriod($strategy, $period) : [];
+
         return swark_view('strategy.kpi', [
-            'kpis' => $this->strategyRepository->findKpisByStrategyAndPeriod($this->getStrategy(), Period::firstOrFail())
+            'kpis' => $kpis,
         ]);
     }
 }

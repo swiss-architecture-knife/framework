@@ -12,7 +12,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($kpis as $kpi)
+        @forelse($kpis as $kpi)
             @if ($last_objective != $kpi->objective_name)
                 <tr>
                     <td colspan="3"><strong>{{ $kpi->objective_name }}</strong></td>
@@ -25,7 +25,9 @@
                 <td>{{ $kpi->goal_value }}</td>
                 <td><span class="badge bg-{{ $kpi->is_goal_reached ? 'success' : 'danger' }}">{{ $kpi->current_value }}</td>
             </tr>
-        @endforeach
+        @empty
+            <x-swark::empty-table cols="3" />
+        @endforelse
         </tbody>
     </table>
 @endsection
