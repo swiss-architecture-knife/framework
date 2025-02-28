@@ -4,9 +4,9 @@ namespace Swark\Api\Server\Domain\Baremetal;
 
 use Swark\Api\Server\Internal\BaseRequest;
 use Swark\Api\Server\Internal\NamingContext;
-use Swark\DataModel\Cloud\Domain\Entity\Account;
-use Swark\DataModel\Cloud\Domain\Entity\AvailabilityZone;
-use Swark\DataModel\Cloud\Domain\Entity\Region;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Cloud\Account;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Cloud\AvailabilityZone;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Cloud\Region;
 
 class BaremetalRequest extends BaseRequest
 {

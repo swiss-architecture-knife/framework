@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\FromGenerator;
 use Maatwebsite\Excel\Concerns\HasReferencesToOtherSheets;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Swark\DataModel\Infrastructure\Domain\Entity\Cluster;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Cluster;
 use Swark\Services\Data\Excel\Column;
 use Swark\Services\Data\Excel\Header;
 use Swark\Services\Data\Excel\Import\RowContext;

@@ -5,7 +5,7 @@ namespace Swark\Services\Data\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromGenerator;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Swark\DataModel\Kpi\Domain\Entity\Period;
+use Swark\DataModel\Governance\Domain\Entity\Kpi\Period;
 use Swark\Services\Data\Excel\Column;
 use Swark\Services\Data\Excel\Header;
 use Swark\Services\Data\Excel\Import\RowContext;

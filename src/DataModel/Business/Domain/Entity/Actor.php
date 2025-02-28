@@ -3,7 +3,7 @@
 namespace Swark\DataModel\Business\Domain\Entity;
 
 use Illuminate\Database\Eloquent\Model;
-use Swark\DataModel\Enterprise\Domain\Entity\Zone;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Zone;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasC4ArchitectureRelations;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasName;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasScompId;

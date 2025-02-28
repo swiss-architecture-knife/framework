@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\FromGenerator;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Swark\DataModel\Business\Domain\Entity\Organization;
-use Swark\DataModel\Cloud\Domain\Entity\Account;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Cloud\Account;
 use Swark\Services\Data\Excel\Column;
 use Swark\Services\Data\Excel\Header;
 use Swark\Services\Data\Excel\Import\RowContext;

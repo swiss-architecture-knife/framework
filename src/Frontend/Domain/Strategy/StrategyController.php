@@ -8,10 +8,10 @@ use Illuminate\Routing\Controller as BaseController;
 use Swark\Cms\Chapters\Chapters;
 use Swark\Cms\Facades\Cms;
 use Swark\DataModel\Content\Domain\Entity\Content;
-use Swark\DataModel\Enterprise\Domain\Entity\Criticality;
-use Swark\DataModel\Kpi\Domain\Entity\Period;
-use Swark\DataModel\Strategy\Domain\Entity\Strategy;
-use Swark\DataModel\Strategy\Domain\Repository\StrategyRepository;
+use Swark\DataModel\Governance\Domain\Entity\Criticality;
+use Swark\DataModel\Governance\Domain\Entity\Kpi\Period;
+use Swark\DataModel\Governance\Domain\Entity\Strategy\Strategy;
+use Swark\DataModel\Governance\Domain\Repository\StrategyRepository;
 
 class StrategyController extends BaseController
 {
@@ -24,7 +24,7 @@ class StrategyController extends BaseController
 
     protected function getStrategy(): ?Strategy
     {
-        return $strategy = \Swark\DataModel\Strategy\Domain\Entity\Strategy::latest()->first();
+        return $strategy = \Swark\DataModel\Governance\Domain\Entity\Strategy\Strategy::latest()->first();
     }
 
     protected function createViewArgs($r = []): array

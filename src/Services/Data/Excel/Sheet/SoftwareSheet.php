@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromGenerator;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Swark\DataModel\Business\Domain\Entity\Organization;
-use Swark\DataModel\Software\Domain\Entity\Software;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Software;
 use Swark\Services\Data\Excel\Column;
 use Swark\Services\Data\Excel\Header;
 use Swark\Services\Data\Excel\Import\RowContext;

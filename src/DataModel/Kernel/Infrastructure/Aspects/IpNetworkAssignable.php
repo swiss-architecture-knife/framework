@@ -3,7 +3,7 @@
 namespace Swark\DataModel\Kernel\Infrastructure\Aspects;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Swark\DataModel\Network\Domain\Entity\IpNetwork;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\IpNetwork;
 
 trait IpNetworkAssignable
 {

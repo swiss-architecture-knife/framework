@@ -5,6 +5,12 @@ return [
             'business' => 'Business-Administration',
             'admin' => 'IT-Administration',
             'compliance' => 'Compliance',
+            'governance' => 'Governance',
+            'auditing' => 'Auditing',
+            'it' => 'IT-Architektur',
+            'software-architecture' => 'Software-Architektur',
+            'operations' => 'Operations',
+            'meta' => 'Meta',
         ],
         'side' => [
             'strategy' => [

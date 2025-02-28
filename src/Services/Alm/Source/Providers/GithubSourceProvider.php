@@ -2,7 +2,7 @@
 
 namespace Swark\Services\Alm\Source\Providers;
 
-use Swark\DataModel\Software\Domain\Entity\SourceProvider;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\SourceProvider;
 
 class GithubSourceProvider implements ProvidesSources, ProvidesChangelog
 {

@@ -4,8 +4,8 @@ namespace Swark\DataModel\Kernel\Infrastructure\Aspects;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Swark\DataModel\Ecosystem\Domain\Entity\AdditionalNaming;
-use Swark\DataModel\Ecosystem\Domain\Entity\ConfigurationItem;
+use Swark\DataModel\Meta\Domain\Entity\AdditionalNaming;
+use Swark\DataModel\Meta\Domain\Entity\ConfigurationItem;
 
 trait IsConfigurationItem
 {

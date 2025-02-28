@@ -2,9 +2,8 @@
 
 namespace Swark\Api\Server\Internal;
 
-use Illuminate\Database\Eloquent\Model;
-use Swark\DataModel\Ecosystem\Domain\Entity\AdditionalNaming;
-use Swark\DataModel\Ecosystem\Domain\Entity\NamingType;
+use Swark\DataModel\Meta\Domain\Entity\AdditionalNaming;
+use Swark\DataModel\Meta\Domain\Entity\NamingType;
 
 class NamingContext
 {

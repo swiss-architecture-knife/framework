@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Swark\Ingester;
 
-use App\Models\Application;
 use Swark\Ingester\Model\Context;
 use Swark\Ingester\Model\Models;
 use Swark\Ingester\Model\Relationship\Attribute;
@@ -59,9 +58,6 @@ class UnitOfWork
     {
         $clazz = $modelContext->options()->modelClazz;
 
-        if ($clazz == Application::class) {
-            return;
-        }
 
         /** @var Item $rawItem */
         foreach ($modelContext->getItems() as $rawItem) {

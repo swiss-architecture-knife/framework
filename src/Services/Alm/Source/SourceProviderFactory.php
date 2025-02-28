@@ -2,7 +2,7 @@
 
 namespace Swark\Services\Alm\Source;
 
-use Swark\DataModel\Software\Domain\Entity\SourceProvider;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\SourceProvider;
 use Swark\Services\Alm\Source\Providers\ArtifacthubSourceProvider;
 use Swark\Services\Alm\Source\Providers\GithubSourceProvider;
 

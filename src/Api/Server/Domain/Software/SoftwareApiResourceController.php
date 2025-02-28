@@ -5,7 +5,7 @@ namespace Swark\Api\Server\Domain\Software;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Swark\Api\Server\Internal\NamingContext;
-use Swark\DataModel\Software\Domain\Entity\Software;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Software;
 
 class SoftwareApiResourceController extends Controller
 {

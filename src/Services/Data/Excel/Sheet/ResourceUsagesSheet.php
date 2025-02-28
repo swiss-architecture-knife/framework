@@ -3,10 +3,10 @@
 namespace Swark\Services\Data\Excel\Sheet;
 
 use Maatwebsite\Excel\Events\BeforeSheet;
-use Swark\DataModel\Ecosystem\Domain\Entity\Relationship;
-use Swark\DataModel\Ecosystem\Domain\Entity\RelationshipType;
-use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
-use Swark\DataModel\Infrastructure\Domain\Entity\Resource;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Resource;
+use Swark\DataModel\Meta\Domain\Entity\Relationship;
+use Swark\DataModel\Meta\Domain\Entity\RelationshipType;
+use Swark\DataModel\Meta\Domain\Entity\ResourceType;
 use Swark\Services\Data\Concerns\HasPublicTitle;
 use Swark\Services\Data\Excel\Column;
 use Swark\Services\Data\Excel\Import\RowContext;

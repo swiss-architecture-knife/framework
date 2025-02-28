@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Swark\DataModel\Kernel\Infrastructure\Repository\Scope;
 
-use Swark\DataModel\Enterprise\Domain\Entity\Zone;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Zone;
 
 class ItemsByScompId implements Scoping
 {

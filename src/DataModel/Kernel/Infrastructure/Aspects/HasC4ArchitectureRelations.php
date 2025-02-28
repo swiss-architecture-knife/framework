@@ -4,11 +4,11 @@ namespace Swark\DataModel\Kernel\Infrastructure\Aspects;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Swark\DataModel\Business\Domain\Entity\Actor;
-use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
-use Swark\DataModel\Enterprise\Domain\Entity\System;
-use Swark\DataModel\Software\Domain\Entity\Component;
-use Swark\DataModel\Software\Domain\Entity\Service;
-use Swark\DataModel\Software\Domain\Entity\Software;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\System;
+use Swark\DataModel\Meta\Domain\Entity\ResourceType;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Component;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Service;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Software;
 
 trait HasC4ArchitectureRelations
 {

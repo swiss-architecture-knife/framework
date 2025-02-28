@@ -4,7 +4,7 @@ namespace Swark\Api\Server\Domain\Runtime;
 
 use Illuminate\Routing\Controller;
 use Swark\Api\Server\Internal\NamingContext;
-use Swark\DataModel\Infrastructure\Domain\Entity\Runtime;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Runtime;
 
 class RuntimeApiResourceController extends Controller
 {

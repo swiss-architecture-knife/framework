@@ -5,7 +5,7 @@ namespace Swark\Api\Server\Domain\Host;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Swark\Api\Kernel\Aspects\ModelResourceResponse;
-use Swark\DataModel\Software\Domain\Entity\Release;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Release;
 
 class HostResource extends JsonResource
 {

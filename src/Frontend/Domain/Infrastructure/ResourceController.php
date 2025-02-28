@@ -6,8 +6,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Swark\Cms\Facades\Cms;
-use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
-use Swark\DataModel\Infrastructure\Domain\Repository\ResourceRepository;
+use Swark\DataModel\InformationTechnology\Domain\Repository\Component\ResourceRepository;
+use Swark\DataModel\Meta\Domain\Entity\ResourceType;
 
 class ResourceController extends BaseController
 {

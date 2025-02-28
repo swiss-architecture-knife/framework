@@ -9,7 +9,7 @@ use Dreitier\Alm\Source\ProvidesSources;
 use Dreitier\Alm\Versioning\Version;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Swark\DataModel\Software\Domain\Entity\SourceProvider;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\SourceProvider;
 use Swark\Services\Alm\Source\Events\HelmChartRetrievedEvent;
 use Swark\Services\Alm\Source\Events\NewerHelmChartsFoundEvent;
 

@@ -7,9 +7,9 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Swark\Cms\Chapters\Chapters;
 use Swark\Cms\Facades\Cms;
-use Swark\DataModel\Enterprise\Domain\Entity\DataClassification;
-use Swark\DataModel\Enterprise\Domain\Entity\Zone;
-use Swark\DataModel\Enterprise\Domain\Repository\ITArchitectureRepository;
+use Swark\DataModel\Compliance\Domain\Entity\DataClassification;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Zone;
+use Swark\DataModel\InformationTechnology\Domain\Repository\ITArchitectureRepository;
 
 class ITArchitectureController extends BaseController
 {

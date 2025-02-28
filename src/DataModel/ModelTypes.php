@@ -2,30 +2,30 @@
 
 namespace Swark\DataModel;
 
-use Swark\DataModel\Action\Domain\Entity\Action;
+use Swark\DataModel\Auditing\Domain\Entity\Action;
+use Swark\DataModel\Auditing\Domain\Entity\Finding;
 use Swark\DataModel\Business\Domain\Entity\Actor;
-use Swark\DataModel\Cloud\Domain\Entity\Subscription;
 use Swark\DataModel\Compliance\Domain\Entity\Control;
-use Swark\DataModel\Compliance\Domain\Entity\Finding;
 use Swark\DataModel\Deployment\Domain\Entity\ApplicationInstance;
 use Swark\DataModel\Deployment\Domain\Entity\Deployment;
-use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
-use Swark\DataModel\Enterprise\Domain\Entity\System;
-use Swark\DataModel\Enterprise\Domain\Entity\Zone;
-use Swark\DataModel\Infrastructure\Domain\Entity\Baremetal;
-use Swark\DataModel\Infrastructure\Domain\Entity\Cluster;
-use Swark\DataModel\Infrastructure\Domain\Entity\Host;
-use Swark\DataModel\Infrastructure\Domain\Entity\Resource;
-use Swark\DataModel\Infrastructure\Domain\Entity\Runtime;
-use Swark\DataModel\Network\Domain\Entity\DnsRecord;
-use Swark\DataModel\Network\Domain\Entity\DnsZone;
-use Swark\DataModel\Network\Domain\Entity\IpNetwork;
-use Swark\DataModel\Network\Domain\Entity\Nic;
-use Swark\DataModel\Network\Domain\Entity\Vlan;
-use Swark\DataModel\Software\Domain\Entity\Component;
-use Swark\DataModel\Software\Domain\Entity\Service;
-use Swark\DataModel\Software\Domain\Entity\Software;
-use Swark\DataModel\Strategy\Domain\Entity\Objective;
+use Swark\DataModel\Governance\Domain\Entity\Strategy\Objective;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Cloud\Subscription;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Baremetal;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Cluster;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Host;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Resource;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Runtime;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\System;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\DnsRecord;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\DnsZone;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\IpNetwork;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\Nic;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\Vlan;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Zone;
+use Swark\DataModel\Meta\Domain\Entity\ResourceType;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Component;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Service;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Software;
 
 enum ModelTypes: string
 {

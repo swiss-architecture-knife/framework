@@ -5,7 +5,7 @@ namespace Swark\Api\Server\Domain\Baremetal;
 use Illuminate\Routing\Controller;
 use Swark\Api\Server\Internal\NamingContext;
 use Swark\DataModel\Cloud\Entity\ManagedBaremetal;
-use Swark\DataModel\Infrastructure\Domain\Entity\Baremetal;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Baremetal;
 
 class BaremetalApiResourceController extends Controller
 {

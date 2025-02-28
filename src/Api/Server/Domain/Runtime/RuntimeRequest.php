@@ -5,8 +5,8 @@ namespace Swark\Api\Server\Domain\Runtime;
 use Swark\Api\Server\Domain\Host\HostRequest;
 use Swark\Api\Server\Internal\BaseRequest;
 use Swark\Api\Server\Internal\NamingContext;
-use Swark\DataModel\Infrastructure\Domain\Entity\Host;
-use Swark\DataModel\Software\Domain\Entity\Release;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Host;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Release;
 
 class RuntimeRequest extends BaseRequest
 {

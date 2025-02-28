@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Swark\Cms\Facades\Cms;
-use Swark\DataModel\Policy\Domain\Entity\Policy;
+use Swark\DataModel\Auditing\Domain\Entity\Policy;
 
 class PolicyController extends BaseController
 {

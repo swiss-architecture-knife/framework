@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Swark\DataModel\InformationTechnology\Domain\Model\Component\ClusterMode;
+use Swark\DataModel\SoftwareArchitecture\Domain\Model\UsageType;
 
 return new class extends Migration {
     private static function registerTriggersFor(string $table, ?string $typeName = null, ?string $nameColumn = 'scomp_id')
@@ -263,7 +265,7 @@ QUERY;
             $table->longText('known_deficits')->nullable();
             $table->tinyInteger('probability')->nullable();
             $table->tinyInteger('extend_of_damage')->nullable();
-            $table->enum('strategy', collect(\Swark\DataModel\Risk\Domain\Model\Strategy::cases())->map(fn($item) => \Illuminate\Support\Str::lower($item->value))->toArray());
+            $table->enum('strategy', collect(\Swark\DataModel\Auditing\Domain\Model\TreatmentStrategy::cases())->map(fn($item) => \Illuminate\Support\Str::lower($item->value))->toArray());
 
             $table->timestamps();
             $table->softDeletesDatetime();
@@ -466,7 +468,7 @@ QUERY;
             $table->id();
             $table->string('name');
             $table->string('scomp_id')->nullable()->unique();
-            $table->string('type')->default(\Swark\DataModel\Ecosystem\Domain\Model\TechnologyType::OTHER->value);
+            $table->string('type')->default(\Swark\DataModel\Governance\Domain\Model\TechnologyType::OTHER->value);
         });
 
         static::registerTriggersFor('technology');
@@ -678,7 +680,7 @@ QUERY;
             $table->string('name');
             $table->string('scomp_id')->nullable()->unique();
 
-            $table->enum('usage_type', collect(\Swark\DataModel\Software\Domain\Model\UsageType::cases())->map(fn($item) => \Illuminate\Support\Str::lower($item->value))->toArray());
+            $table->enum('usage_type', collect(UsageType::cases())->map(fn($item) => \Illuminate\Support\Str::lower($item->value))->toArray());
             $table->boolean('is_virtualizer')->default(false);
             $table->boolean('is_operating_system')->default(false);
             $table->boolean('is_runtime')->default(false);
@@ -1060,7 +1062,7 @@ QUERY;
             // cluster is targeted for this software id and/or software version
             $table->unsignedBigInteger('target_release_id')->nullable();
 
-            $table->enum('mode', array_values(\Swark\DataModel\Infrastructure\Domain\Model\ClusterMode::toMap()))->nullable();
+            $table->enum('mode', array_values(ClusterMode::toMap()))->nullable();
             $table->string('virtual_name')->nullable();
             // stage
             $table->unsignedBigInteger('stage_id')->nullable();

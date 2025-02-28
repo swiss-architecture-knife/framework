@@ -2,8 +2,8 @@
 
 namespace Swark\Services\Data\Excel\Sheet;
 
-use Swark\DataModel\Infrastructure\Domain\Entity\Cluster;
-use Swark\DataModel\Infrastructure\Domain\Entity\ClusterMember;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Cluster;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\ClusterMember;
 use Swark\Services\Data\Concerns\HasPublicTitle;
 use Swark\Services\Data\Excel\Column;
 use Swark\Services\Data\Excel\Import\RowContext;

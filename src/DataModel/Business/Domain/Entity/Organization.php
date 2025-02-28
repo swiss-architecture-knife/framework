@@ -4,18 +4,18 @@ namespace Swark\DataModel\Business\Domain\Entity;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Swark\DataModel\Cloud\Domain\Entity\Account;
-use Swark\DataModel\Cloud\Domain\Entity\Subscription;
 use Swark\DataModel\Deployment\Domain\Entity\ApplicationInstance;
-use Swark\DataModel\Enterprise\Domain\Entity\Zone;
-use Swark\DataModel\Infrastructure\Domain\Entity\Baremetal;
-use Swark\DataModel\Infrastructure\Domain\Entity\Cluster;
-use Swark\DataModel\Infrastructure\Domain\Entity\Host;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Cloud\Account;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Cloud\Subscription;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Baremetal;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Cluster;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Host;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\DnsZone;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\IpNetwork;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Network\Vlan;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Zone;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasName;
 use Swark\DataModel\Kernel\Infrastructure\Aspects\HasScompId;
-use Swark\DataModel\Network\Domain\Entity\DnsZone;
-use Swark\DataModel\Network\Domain\Entity\IpNetwork;
-use Swark\DataModel\Network\Domain\Entity\Vlan;
 
 class Organization extends Model
 {

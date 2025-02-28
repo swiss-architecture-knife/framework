@@ -4,9 +4,9 @@ namespace Swark\Services\Alm\Source;
 
 use Dreitier\Alm\Source\Changelog;
 use Dreitier\Alm\Source\ProvidesSources;
-use Swark\DataModel\Software\Domain\Entity\Source;
-use Swark\DataModel\Software\Domain\Entity\SourceProvider;
-use Swark\DataModel\Software\Domain\Event\BeforeReleaseSaved;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Source;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\SourceProvider;
+use Swark\DataModel\SoftwareArchitecture\Domain\Event\BeforeReleaseSaved;
 
 /**
  * Resolve changelogs of sources based upon their SourceProvider

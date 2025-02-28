@@ -3,8 +3,13 @@ return [
     'nav' => [
         'top' => [
             'business' => 'Business administration',
-            'admin' => 'IT administration',
             'compliance' => 'Compliance',
+            'governance' => 'Governance',
+            'auditing' => 'Auditing',
+            'it' => 'IT architecture',
+            'software-architecture' => 'Software architecture',
+            'operations' => 'Operations',
+            'meta' => 'Meta',
         ],
         'side' => [
             'strategy' => [

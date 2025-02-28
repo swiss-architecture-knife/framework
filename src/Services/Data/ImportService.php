@@ -4,7 +4,7 @@ namespace Swark\Services\Data;
 
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Reader;
-use Swark\DataModel\Policy\Domain\Entity\Scope;
+use Swark\DataModel\Auditing\Domain\Entity\Scope;
 use Swark\Services\Data\Excel\Import\SwarkExcelImport;
 use Swark\Services\Data\Excel\SwarkExcelReader;
 

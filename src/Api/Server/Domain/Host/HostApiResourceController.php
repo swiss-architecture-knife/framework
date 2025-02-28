@@ -4,7 +4,7 @@ namespace Swark\Api\Server\Domain\Host;
 
 use Illuminate\Routing\Controller;
 use Swark\Api\Server\Internal\NamingContext;
-use Swark\DataModel\Infrastructure\Domain\Entity\Host;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Host;
 
 class HostApiResourceController extends Controller
 {

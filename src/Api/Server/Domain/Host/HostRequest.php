@@ -5,10 +5,10 @@ namespace Swark\Api\Server\Domain\Host;
 use Swark\Api\Server\Internal\BaseRequest;
 use Swark\Api\Server\Internal\NamingContext;
 use Swark\DataModel\Business\Domain\Entity\Organization;
-use Swark\DataModel\Infrastructure\Domain\Entity\Baremetal;
-use Swark\DataModel\Infrastructure\Domain\Entity\Host;
-use Swark\DataModel\Software\Domain\Entity\Release;
-use Swark\DataModel\Software\Domain\Entity\Software;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Baremetal;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Host;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Release;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Software;
 
 class HostRequest extends BaseRequest
 {

@@ -5,8 +5,8 @@ namespace Swark\Frontend\Domain\Software;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use Swark\DataModel\Enterprise\Domain\Entity\Criticality;
-use Swark\DataModel\Software\Domain\Repository\SoftwareRepository;
+use Swark\DataModel\Governance\Domain\Entity\Criticality;
+use Swark\DataModel\SoftwareArchitecture\Domain\Repository\SoftwareRepository;
 
 class CatalogController extends BaseController
 {

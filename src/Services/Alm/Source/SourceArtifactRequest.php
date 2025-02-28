@@ -4,7 +4,7 @@ namespace Swark\Services\Alm\Source;
 
 use Dreitier\Alm\Source\Artifacts;
 use Dreitier\Alm\Source\ProvidesSources;
-use Swark\DataModel\Software\Domain\Entity\Source;
+use Swark\DataModel\SoftwareArchitecture\Domain\Entity\Source;
 
 /**
  * Requests artifacts from a source provider.

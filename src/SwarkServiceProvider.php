@@ -34,9 +34,10 @@ use Swark\Console\Commands\ReviewKubernetesTokensCommand;
 use Swark\Console\Commands\UpdateHelmVersions;
 use Swark\Content\Domain\Service\MarkdownService;
 use Swark\Content\Infrastructure\Facades\Markdown;
-use Swark\DataModel\Ecosystem\Domain\Entity\ResourceType;
+use Swark\DataModel\Auditing\Domain\Entity\Policy;
+use Swark\DataModel\Kernel\Infrastructure\UI\FilamentHelper;
+use Swark\DataModel\Meta\Domain\Entity\ResourceType;
 use Swark\DataModel\ModelTypes;
-use Swark\DataModel\Policy\Domain\Entity\Policy;
 use Swark\Frontend\Infrastructure\View\RoutableConfigurationItem;
 use Swark\Frontend\Infrastructure\View\RoutableViewFinder;
 use Swark\Frontend\UI\Components\Block\Content;
@@ -127,6 +128,7 @@ class SwarkServiceProvider extends PackageServiceProvider
         $this->configureEloquent();
         $this->enableDatabaseLogging();
         $this->configureLogging();
+        $this->configureFilament();
     }
 
     /**
@@ -236,7 +238,12 @@ class SwarkServiceProvider extends PackageServiceProvider
                 $this->newNavigation()
                     ->add(__('swark::g.nav.top.business'), route('filament.business.pages.dashboard'))
                     ->add(__('swark::g.nav.top.compliance'), route('filament.compliance.pages.dashboard'))
-                    ->add(__('swark::g.nav.top.admin'), route('filament.admin.pages.dashboard'))
+                    ->add(__('swark::g.nav.top.governance'), route('filament.governance.pages.dashboard'))
+                    ->add(__('swark::g.nav.top.auditing'), route('filament.auditing.pages.dashboard'))
+                    ->add(__('swark::g.nav.top.it'), route('filament.it.pages.dashboard'))
+                    ->add(__('swark::g.nav.top.software-architecture'), route('filament.software-architecture.pages.dashboard'))
+                    ->add(__('swark::g.nav.top.operations'), route('filament.operations.pages.dashboard'))
+                    ->add(__('swark::g.nav.top.meta'), route('filament.meta.pages.dashboard'))
                     ->tree()
             )->with('side_navigation',
                 $this->newNavigation()
@@ -329,5 +336,10 @@ class SwarkServiceProvider extends PackageServiceProvider
                 "debug" => Log::debug($message),
             };
         }, 1, 5);
+    }
+
+    private function configureFilament()
+    {
+        FilamentHelper::registerDefaultRenderHooks();
     }
 }

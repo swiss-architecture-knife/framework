@@ -7,9 +7,9 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Swark\Cms\Chapters\Chapters;
 use Swark\Cms\Facades\Cms;
-use Swark\DataModel\Deployment\Domain\Repository\ApplicationInstanceRepository;
-use Swark\DataModel\Infrastructure\Domain\Entity\Cluster;
-use Swark\DataModel\Infrastructure\Domain\Repository\ClusterRepository;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Cluster;
+use Swark\DataModel\InformationTechnology\Domain\Repository\Component\ClusterRepository;
+use Swark\DataModel\Operations\Domain\Repository\ApplicationInstanceRepository;
 
 class ClusterController extends BaseController
 {

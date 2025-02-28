@@ -38,7 +38,7 @@ class Ingester
             $modelContext = new Context($directory);
             $optionsBuilder = new OptionsBuilder();
             $optionsBuilder->model(
-                "\\App\Models\\" . Str::ucfirst(Str::camel($directory)), 'default');
+                "\\Swark\\DataModel\\" . Str::ucfirst(Str::camel($directory)), 'default');
 
             $modelContext->isUsable(true);
 

@@ -4,7 +4,7 @@ namespace Swark\Api\Server\Domain\Namespace;
 
 use Swark\Api\Server\Internal\BaseRequest;
 use Swark\Api\Server\Internal\NamingContext;
-use Swark\DataModel\Infrastructure\Domain\Entity\Cluster;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Cluster;
 
 class NamespaceRequest extends BaseRequest
 {

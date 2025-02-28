@@ -7,7 +7,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Swark\Cms\Chapters\Chapters;
 use Swark\Cms\Facades\Cms;
-use Swark\DataModel\Infrastructure\Domain\Repository\BaremetalRepository;
+use Swark\DataModel\InformationTechnology\Domain\Repository\Component\BaremetalRepository;
 
 class BaremetalController extends BaseController
 {

@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromGenerator;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Swark\DataModel\Ecosystem\Domain\Entity\ProtocolStack;
+use Swark\DataModel\InformationTechnology\Domain\Entity\ProtocolStack;
 use Swark\Services\Data\Excel\Column;
 use Swark\Services\Data\Excel\Header;
 use Swark\Services\Data\Excel\Import\RowContext;

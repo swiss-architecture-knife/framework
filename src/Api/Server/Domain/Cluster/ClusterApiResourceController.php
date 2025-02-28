@@ -4,7 +4,7 @@ namespace Swark\Api\Server\Domain\Cluster;
 
 use Illuminate\Routing\Controller;
 use Swark\Api\Server\Internal\NamingContext;
-use Swark\DataModel\Infrastructure\Domain\Entity\Cluster;
+use Swark\DataModel\InformationTechnology\Domain\Entity\Component\Cluster;
 
 class ClusterApiResourceController extends Controller
 {
