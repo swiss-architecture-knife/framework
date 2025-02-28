@@ -7,6 +7,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Swark\Cms\Chapters\Chapters;
 use Swark\Cms\Facades\Cms;
+use Swark\DataModel\Enterprise\Domain\Entity\DataClassification;
+use Swark\DataModel\Enterprise\Domain\Entity\Zone;
 use Swark\DataModel\Enterprise\Domain\Repository\ITArchitectureRepository;
 
 class ITArchitectureController extends BaseController
@@ -20,8 +22,8 @@ class ITArchitectureController extends BaseController
     protected function createViewArgs(): array
     {
         return [
-            'data_classifications' => \Swark\DataModel\Enterprise\Domain\Entity\DataClassification::all(),
-            'zone_model' => \Swark\DataModel\Enterprise\Domain\Entity\Zone::with(['dataClassification', 'actors'])->get(),
+            'data_classifications' => DataClassification::all(),
+            'zone_model' => Zone::with(['dataClassification', 'actors'])->get(),
             'c4_zone' => $this->createC4ZoneModel(),
             'matrix' => $this->architectureRepository->createZoneMatrix(),
         ];
@@ -48,7 +50,7 @@ class ITArchitectureController extends BaseController
     protected function createC4ZoneModel(): C4Generator
     {
         $r = new C4Generator();
-        $data = \Swark\DataModel\Enterprise\Domain\Entity\Zone::with(['dataClassification', 'actors'])->get();
+        $data = Zone::with(['dataClassification', 'actors'])->get();
 
         foreach ($data as $model) {
             $r->push(<<<LINE

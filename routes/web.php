@@ -56,7 +56,7 @@ Route::name('swark.')
 
                 Route::prefix('software')
                     ->name('software.')->group(function () {
-                        Route::get('/', [CatalogController::class, 'index'])->name('index');
+                        Route::get('/overview', [CatalogController::class, 'index'])->name('index');
                         Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
 
                     });

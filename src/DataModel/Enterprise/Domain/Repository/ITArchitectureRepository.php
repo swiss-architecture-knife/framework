@@ -24,7 +24,7 @@ LEFT JOIN
 	relationship r_deny ON lz.id = r_deny.source_id AND r_deny.source_type = 'logical_zone' AND r_deny.relationship_type_id IN (SELECT id FROM relationship_type WHERE scomp_id = 'deny_access')
 LEFT JOIN
 	logical_zone lz_deny ON lz_deny.id = r_deny.target_id AND r_deny.target_type = 'logical_zone'
-GROUP BY lz.id
+GROUP BY lz.id, lz.name, lz.scomp_id
 ;
 SQL;
         $rows = DB::select($query);
