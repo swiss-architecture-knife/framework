@@ -10,8 +10,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
 use function Laravel\Prompts\text;
 
-#[AsCommand(name: 'swark:user')]
-class UpsertSwarkUser extends MakeUserCommand
+class CreateSwarkUser extends MakeUserCommand
 {
     protected $description = 'Create a new swark user';
 
@@ -55,7 +54,7 @@ class UpsertSwarkUser extends MakeUserCommand
     protected function skipOnExistingUser(): bool
     {
         if ($this->options['skip-on-existing-user']) {
-            return static::getUserModel()->where('email', $this->options['email'])->exists();
+            return static::getUserModel()::where('email', $this->options['email'])->exists();
         }
 
         return false;
@@ -85,7 +84,8 @@ class UpsertSwarkUser extends MakeUserCommand
         }
 
         if ($this->skipOnExistingUser()) {
-            $this->info("User with this email address already exists, not creating a new one");
+            $this->info("User with email '" . $this->options['email'] . "' address already exists, not creating a new one");
+            return static::SUCCESS;
         }
 
         $user = $this->createUser();

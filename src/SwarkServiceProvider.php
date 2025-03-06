@@ -52,6 +52,7 @@ use Swark\Frontend\UI\Components\MermaidJs;
 use Swark\Frontend\UI\Components\Outline\Outline;
 use Swark\Frontend\UI\Components\Plantuml;
 use Swark\Frontend\UI\Components\Plotly;
+use Swark\IdP\Presenter\Console\CreateSwarkUser;
 use TorMorten\Eventy\Facades\Eventy;
 
 class SwarkServiceProvider extends PackageServiceProvider
@@ -102,6 +103,7 @@ class SwarkServiceProvider extends PackageServiceProvider
                 UpdateHelmVersions::class,
                 ProcessBatchDependencies::class,
                 ReviewKubernetesTokensCommand::class,
+                CreateSwarkUser::class
             );
     }
 
