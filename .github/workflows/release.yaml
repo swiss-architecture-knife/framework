@@ -66,14 +66,18 @@ jobs:
           sed -i "s/const string SHORT_HASH = '.*';/const string SHORT_HASH = '${{ steps.version.outputs.git_hash }}';/g" src/Swark.php
 
       - name: Commit version change
+        id: committed-version
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update version to v${{ steps.version.outputs.version }} / ${{ steps.version.outputs.git_hash }}"
 
       - name: Create tagged version
+        id: tagged-version
         uses: rickstaa/action-create-tag@v1.7.2
         with:
           tag: v${{ steps.version.outputs.version }}
+          # use version hash from just recent commit and not the original one; otherwise we do not include the version information
+          commit_sha: ${{ steps.committed-version.outputs.commit_hash }}
           tag_exists_error: true
 
       - name: Generate release notes
