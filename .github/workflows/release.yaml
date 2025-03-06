@@ -29,6 +29,8 @@ jobs:
         id: version
         run: |
           echo "version=${VERSION#v}" >> "$GITHUB_OUTPUT"
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          echo "git_hash=${git_hash}" >> "$GITHUB_OUTPUT"
         env:
           VERSION: ${{ inputs.version }}
 
@@ -59,12 +61,14 @@ jobs:
             core.setFailed('Workflow failed. Release version does not match with selected target branch. Did you select the correct branch?')
 
       - name: Update Swark.php version
-        run: sed -i "s/const VERSION = '.*';/const VERSION = '${{ steps.version.outputs.version }}';/g" src/Swark.php
+        run: |
+          sed -i "s/const VERSION = '.*';/const VERSION = '${{ steps.version.outputs.version }}';/g" src/Swark.php
+          sed -i "s/const SHORT_HASH = '.*';/const SHORT_HASH = '${{ steps.version.outputs.git_hash }}';/g" src/Swark.php
 
       - name: Commit version change
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update version to v${{ steps.version.outputs.version }}"
+          commit_message: "Update version to v${{ steps.version.outputs.version }} / ${{ steps.version.outputs.git_hash }}"
 
       - name: Create tagged version
         uses: rickstaa/action-create-tag@v1.7.2

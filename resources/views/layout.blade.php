@@ -71,7 +71,7 @@
     </main>
 </div>
 <div class="d-block px-3 py-2 text-center text-bold skippy">
-    <a href="https://dreitier.com/" class="text-white text-decoration-none">powered by swark - architecture and strategy by dreitier GmbH</a>
+    <a href="https://dreitier.com/" class="text-white text-decoration-none">powered by swark v{{ \Swark\Swark::VERSION }}, #{{ \Swark\Swark::SHORT_HASH }} - architecture and strategy by dreitier GmbH</a>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 @stack('footer_js')
