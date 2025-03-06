@@ -62,8 +62,8 @@ jobs:
 
       - name: Update Swark.php version
         run: |
-          sed -i "s/const VERSION = '.*';/const VERSION = '${{ steps.version.outputs.version }}';/g" src/Swark.php
-          sed -i "s/const SHORT_HASH = '.*';/const SHORT_HASH = '${{ steps.version.outputs.git_hash }}';/g" src/Swark.php
+          sed -i "s/const string VERSION = '.*';/const string VERSION = '${{ steps.version.outputs.version }}';/g" src/Swark.php
+          sed -i "s/const string SHORT_HASH = '.*';/const string SHORT_HASH = '${{ steps.version.outputs.git_hash }}';/g" src/Swark.php
 
       - name: Commit version change
         uses: stefanzweifel/git-auto-commit-action@v5
