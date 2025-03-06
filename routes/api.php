@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Swark\Api\Server\Domain\Baremetal\BaremetalApiResourceController;
-use Swark\Api\Server\Domain\Cluster\ClusterApiResourceController;
-use Swark\Api\Server\Domain\Host\HostApiResourceController;
-use Swark\Api\Server\Domain\Namespace\NamespaceApiResourceController;
-use Swark\Api\Server\Domain\Runtime\RuntimeApiResourceController;
-use Swark\Api\Server\Domain\Software\SoftwareApiResourceController;
+use Swark\DataModel\Presenter\API\InformationTechnology\Component\BaremetalApiResourceController;
+use Swark\DataModel\Presenter\API\InformationTechnology\Component\ClusterApiResourceController;
+use Swark\DataModel\Presenter\API\InformationTechnology\Component\HostApiResourceController;
+use Swark\DataModel\Presenter\API\InformationTechnology\Component\NamespaceApiResourceController;
+use Swark\DataModel\Presenter\API\InformationTechnology\Component\RuntimeApiResourceController;
+use Swark\DataModel\Presenter\API\InformationTechnology\Component\SoftwareApiResourceController;
 
 /*
 |--------------------------------------------------------------------------

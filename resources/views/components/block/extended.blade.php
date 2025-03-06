@@ -13,7 +13,7 @@
 
 <div class="card my-4">
     <div class="card-body">
-        @if ($variants->first() instanceof \Swark\Cms\Content\NotFound)
+        @if ($variants->first() instanceof \Swark\Cms\Domain\Model\Content\NotFound)
             <div class="bd-callout bd-callout-warning">
                 Content für Pfad <code>{{ $path }}</code> wurde noch nicht hinterlegt.
             </div>

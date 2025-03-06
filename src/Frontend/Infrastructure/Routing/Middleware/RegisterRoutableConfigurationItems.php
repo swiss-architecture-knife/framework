@@ -3,7 +3,7 @@ namespace Swark\Frontend\Infrastructure\Routing\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Routing\Registrar;
-use Swark\Cms\Events\DelegatingHooksRegistrar;
+use Swark\Frontend\Infrastructure\Hooking\DelegatingHooksRegistrar;
 
 /**
  * Whe a valid route is available, register content events

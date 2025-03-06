@@ -5,7 +5,7 @@ namespace Swark;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Log\Events\MessageLogged;
-use Swark\Internal\Listeners\MessageLoggedListener;
+use Swark\Kernel\Infrastructure\Listeners\MessageLoggedListener;
 
 class EventServiceProvider extends ServiceProvider
 {

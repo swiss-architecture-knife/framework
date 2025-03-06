@@ -4,8 +4,8 @@ namespace Swark\Tests\Unit\Cms\Chapters;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Swark\Cms\Chapters\Chapters;
-use Swark\Cms\Chapters\NoMoreChaptersException;
+use Swark\Cms\Domain\Model\Chapters\Chapters;
+use Swark\Cms\Domain\Model\Chapters\NoMoreChaptersException;
 
 class ChaptersTest extends TestCase
 {

@@ -2,16 +2,16 @@
 
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
-use Swark\Frontend\Domain\Architecture\ITArchitectureController;
-use Swark\Frontend\Domain\GlossaryController;
-use Swark\Frontend\Domain\Infrastructure\BaremetalController;
-use Swark\Frontend\Domain\Infrastructure\ClusterController;
-use Swark\Frontend\Domain\Infrastructure\InfrastructureController;
-use Swark\Frontend\Domain\Infrastructure\ResourceController;
-use Swark\Frontend\Domain\Policy\PolicyController;
-use Swark\Frontend\Domain\SandboxController;
-use Swark\Frontend\Domain\Software\CatalogController;
-use Swark\Frontend\Domain\Strategy\StrategyController;
+use Swark\Frontend\Presenter\Auditing\PolicyController;
+use Swark\Frontend\Presenter\GlossaryController;
+use Swark\Frontend\Presenter\Governance\StrategyController;
+use Swark\Frontend\Presenter\InformationTechnology\BaremetalController;
+use Swark\Frontend\Presenter\InformationTechnology\ClusterController;
+use Swark\Frontend\Presenter\InformationTechnology\InfrastructureController;
+use Swark\Frontend\Presenter\InformationTechnology\ResourceController;
+use Swark\Frontend\Presenter\ITArchitectureController;
+use Swark\Frontend\Presenter\SandboxController;
+use Swark\Frontend\Presenter\SoftwareArchitecture\CatalogController;
 
 /*
 |--------------------------------------------------------------------------

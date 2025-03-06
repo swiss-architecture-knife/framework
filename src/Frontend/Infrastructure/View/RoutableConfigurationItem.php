@@ -4,7 +4,7 @@ namespace Swark\Frontend\Infrastructure\View;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Route;
-use Swark\DataModel\Kernel\Infrastructure\Aspects\HasScompId;
+use Swark\DataModel\Infrastructure\Aspects\HasScompId;
 
 /**
  * Provide local file mappings for routes which are assigned to configuration items

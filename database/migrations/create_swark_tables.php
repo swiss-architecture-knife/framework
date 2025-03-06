@@ -4,44 +4,106 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Swark\DataModel\InformationTechnology\Domain\Model\Component\ClusterMode;
-use Swark\DataModel\SoftwareArchitecture\Domain\Model\UsageType;
+use Swark\DataModel\Domain\Model\InformationTechnology\Component\ClusterMode;
+use Swark\DataModel\Domain\Model\SoftwareArchitecture\UsageType;
 
 return new class extends Migration {
-    private static function registerTriggersFor(string $table, ?string $typeName = null, ?string $nameColumn = 'scomp_id')
+
+    protected function createLifecycleTables()
     {
-        $typeName = $typeName ?? $table;
-        $query = <<<QUERY
-CREATE TRIGGER {$table}_after_insert AFTER INSERT ON `{$table}`
-FOR EACH ROW
-	INSERT INTO configuration_item(ref_type, ref_id, name, fullname, scomp_id) VALUES('{$typeName}', NEW.id, NEW.{$nameColumn}, NEW.{$nameColumn}, NEW.scomp_id)
-QUERY;
-        DB::unprepared($query);
+        // e.g. physical-hardware
+        Schema::create('lifecycle_schema', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+        });
 
-        $query = <<<QUERY
-CREATE TRIGGER {$table}_after_update AFTER UPDATE ON `{$table}`
-FOR EACH ROW
-	UPDATE configuration_item SET
-    name = NEW.{$nameColumn},
-    fullname = NEW.{$nameColumn},
-    scomp_id = NEW.scomp_id
-    WHERE ref_id = NEW.id AND ref_type = '{$typeName}'
-QUERY;
-        DB::unprepared($query);
+        // assign physical-hardware to ref_type:baremetal
+        Schema::create('lifecycle_assigned', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('lifecycle_schema_id');
+            $table->string('ref_type');
 
-        $query = <<<QUERY
-CREATE TRIGGER {$table}_after_delete AFTER DELETE ON `{$table}`
-FOR EACH ROW
-	DELETE FROM configuration_item WHERE ref_id = OLD.id AND ref_type = '{$typeName}'
-QUERY;
+            $table->foreign('lifecycle_schema_id')->references('id')->on('lifecycle_schema');
+        });
 
-        DB::unprepared($query);
+        // reusable statusses, e.g. planned, purchased, online, offline, discarded
+        Schema::create('lifecycle_status', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->enum('category', \Swark\DataModel\Domain\Model\LifecycleStatusCategory::toMap())->default(\Swark\DataModel\Domain\Model\LifecycleStatusCategory::BEGIN->value);
+        });
+
+        // assign a lifecycle status to a specific schema
+        Schema::create('lifecycle', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('lifecycle_schema_id');
+            $table->unsignedBigInteger('lifecycle_status_id');
+            // make that nullable so that we can apply the unique
+            $table->boolean('is_start')->nullable()->default(null);
+
+            $table->unique(['lifecycle_schema_id', 'lifecycle_status_id', 'is_start'], 'only_one_start_node');
+            $table->foreign('lifecycle_schema_id')->references('id')->on('lifecycle_schema');
+            $table->foreign('lifecycle_status_id')->references('id')->on('lifecycle_status');
+        });
+
+        // transition between statusses
+        Schema::create('lifecycle_transition', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->unsignedBigInteger('from_lifecycle_id');
+            $table->unsignedBigInteger('to_lifecycle_id');
+
+            $table->unique(['from_lifecycle_id', 'to_lifecycle_id']);
+            $table->foreign('from_lifecycle_id')->references('id')->on('lifecycle');
+            $table->foreign('to_lifecycle_id')->references('id')->on('lifecycle');
+        });
     }
 
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    protected function createMetaTables()
+    {
+        Schema::create('meta_schema', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('ref_type');
+        });
+
+        Schema::create('meta_type', function (Blueprint $table) {
+            $table->id();
+            $table->string('internal_name')->unique();
+            $table->string('name');
+            $table->longText('description')->nullable();
+            $table->boolean('is_nullable')->default(false);
+            $table->enum('known_type', \Swark\DataModel\Domain\Model\Meta\KnownMetaType::toMap())->default(\Swark\DataModel\Domain\Model\Meta\KnownMetaType::STRING->value);
+            $table->string('custom_type')->nullable(true);
+        });
+
+        // assign physical-hardware to ref_type:baremetal
+        Schema::create('meta_property', function (Blueprint $table) {
+            $table->id();
+            $table->string('internal_name')->unique();
+            $table->string('name');
+            $table->longText('description')->nullable();
+            $table->unsignedBigInteger('meta_type_id');
+            // if not present, use meta_type.is_nullable
+            $table->boolean('is_nullable')->nullable();
+
+            $table->foreign('meta_type_id')->references('id')->on('meta_type');
+
+        });
+
+        Schema::create('meta', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('meta_property_id');
+            $table->unsignedBigInteger('meta_schema_id');
+            $table->unsignedBigInteger('order_column')->default(0);
+            $table->boolean('is_required')->default(false);
+
+            $table->foreign('meta_property_id')->references('id')->on('meta_property');
+            $table->foreign('meta_schema_id')->references('id')->on('meta_schema');
+        });
+    }
+
+    protected function createConfigurationItemTables()
     {
         // aliases for configuration items, e.g. kubernetes-uid, jira, ipv4, ipv6
         Schema::create('naming_type', function (Blueprint $table) {
@@ -54,38 +116,81 @@ QUERY;
         });
 
         Schema::create('configuration_item', function (Blueprint $table) {
-            $table->id();
             $table->string('ref_type');
             $table->unsignedBigInteger('ref_id');
+            $table->uuid('uuid');
             $table->string('name')->nullable();
             $table->string('fullname')->nullable();
             $table->string('scomp_id')->nullable();
+            $table->unsignedBigInteger('lifecycle_id')->nullable();
+            $table->dateTime('last_seen_at')->nullable();
+            $table->timestamps();
 
-            $table->unique(['ref_type', 'ref_id']);
+            $table->primary(['ref_type', 'ref_id']);
             $table->unique(['ref_type', 'scomp_id']);
+            $table->unique(['uuid'], 'idx_by_uuid');
             $table->index(['ref_type', 'scomp_id'], 'idx_by_scomp_id');
             $table->index(['ref_type', 'ref_id'], 'idx_by_ref_id');
+            $table->index(['uuid', 'ref_type', 'ref_id'], 'idx_full');
+            $table->foreign('lifecycle_id')->references('id')->on('lifecycle');
         });
 
         // store additional names or ids for configuration items
         Schema::create('configuration_item_naming', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('configuration_item_id');
+            $table->uuid('uuid');
+            $table->unsignedBigInteger('configuration_item_uuid');
             $table->unsignedBigInteger('naming_type_id');
             $table->string('name');
 
             $table->timestamps();
             $table->softDeletesDatetime();
 
-            $table->foreign('configuration_item_id')->references('id')->on('configuration_item')->onDelete('cascade');
+            $table->foreign(['uuid'])->references(['uuid'])->on('configuration_item')->onDelete('cascade');
             $table->foreign('naming_type_id')->references('id')->on('naming_type');
         });
 
+        // additional meta data for configuration item
+        Schema::create('configuration_item_meta', function (Blueprint $table) {
+            $table->uuid('uuid')->primary();
+            $table->unsignedBigInteger('meta_id');
+            // everything is nullable as the meta.meta_property defines its real type
+            $table->longText('text_value')->nullable();
+            $table->boolean('boolean_value')->nullable();
+            $table->decimal('number_value', 10, 2)->nullable();
+            $table->date('date_value')->nullable();
+
+            $table->foreign(['uuid'])->references(['uuid'])->on('configuration_item')->onDelete('cascade');
+            $table->foreign(['meta_id'])->references(['id'])->on('meta')->onDelete('cascade');
+        });
+
+        // event log for configuration items
+        Schema::create('configuration_item_history', function (Blueprint $table) {
+            $table->uuid('uuid')->primary();
+            $table->string('event');
+            $table->longText('comment')->nullable();
+            $table->longText('data')->nullable();
+            $table->unsignedBigInteger('changed_by');
+            $table->dateTime('changed_at');
+
+            $table->foreign('uuid')->references('uuid')->on('configuration_item')->onDelete('cascade');
+            $table->foreign('changed_by')->references('id')->on('users');
+        });
+    }
+
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        $this->createLifecycleTables();
+        $this->createMetaTables();
+        $this->createConfigurationItemTables();
+
         Schema::create('content', function (Blueprint $table) {
             $table->id();
-            $table->string('scomp_id')->unique();
+            $table->string('scomp_id');
             $table->longText('content');
-            $table->enum('type', ['markdown', 'html']);
+            $table->enum('type', \Swark\Cms\Domain\Model\ContentType::toMap());
             $table->timestamps();
         });
 
@@ -93,13 +198,11 @@ QUERY;
         Schema::create('criticality', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->unique();
             $table->smallInteger('position')->default(0);
         });
 
         Schema::create('scope_template', function (Blueprint $table) {
             $table->id();
-            $table->string('scomp_id')->nullable();
             $table->string('name');
             $table->longText('description')->nullable();
             $table->string('instance_of');
@@ -107,19 +210,14 @@ QUERY;
             $table->json('template_options')->nullable();
         });
 
-        static::registerTriggersFor('scope_template');
-
         Schema::create('regulation', function (Blueprint $table) {
             $table->id();
             // VaIT, NIS2, DORA
             $table->string('name');
-            $table->string('scomp_id')->nullable()->unique();
 
             $table->timestamps();
             $table->softDeletesDatetime();
         });
-
-        static::registerTriggersFor('regulation');
 
         Schema::create('regulation_chapter', function (Blueprint $table) {
             $table->id();
@@ -136,7 +234,7 @@ QUERY;
             // target status
             $table->longtext('target_status')->nullable();
             // relevance
-            $table->enum('relevancy', collect(\Swark\DataModel\Compliance\Domain\Model\RelevanceType::cases())->map(fn($item) => \Illuminate\Support\Str::lower($item->value))->toArray())->nullable();
+            $table->enum('relevancy', \Swark\DataModel\Domain\Model\Compliance\RelevanceType::toMap())->nullable();
             $table->unsignedBigInteger('regulation_id');
 
             $table->timestamps();
@@ -166,18 +264,14 @@ QUERY;
         Schema::create('strategy', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             $table->longText('description')->nullable();
 
             $table->timestamps();
         });
 
-        static::registerTriggersFor('strategy');
-
         Schema::create('objective', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             // what is the goal of this objective
             $table->longText('description')->nullable();
             // why has this objective been introduced?
@@ -188,18 +282,13 @@ QUERY;
             $table->foreign('strategy_id')->references('id')->on('strategy');
         });
 
-        static::registerTriggersFor('objective');
-
         Schema::create('policy', function (Blueprint $table) {
             $table->id();
-            $table->string('scomp_id')->nullable();
             $table->string('name');
             $table->longText('description')->nullable();
 
             $table->timestamps();
         });
-
-        static::registerTriggersFor('policy');
 
         Schema::create('policy_for_regulation_chapter', function (Blueprint $table) {
             $table->id();
@@ -213,7 +302,6 @@ QUERY;
 
         Schema::create('rule', function (Blueprint $table) {
             $table->id();
-            $table->string('scomp_id')->nullable();
             $table->string('name');
             $table->longText('description')->nullable();
             $table->unsignedBigInteger('order_column')->default(0);
@@ -224,9 +312,6 @@ QUERY;
 
             $table->foreign('policy_id')->references('id')->on('policy');
         });
-
-
-        static::registerTriggersFor('rule');
 
         Schema::create('rule_scope', function (Blueprint $table) {
             $table->id();
@@ -242,7 +327,7 @@ QUERY;
             $table->id();
             $table->morphs('item');
             $table->unsignedBigInteger('rule_scope_id');
-            $table->enum('status', ['ok', 'invalid'])->nullable();
+            $table->enum('status', \Swark\DataModel\Domain\Model\Auditing\RuleStatus::toMap())->nullable();
             $table->dateTime('first_missing_at')->nullable();
             $table->dateTime('last_found_at')->nullable();
             $table->longText('description')->nullable();
@@ -254,18 +339,17 @@ QUERY;
 
         Schema::create('finding', function (Blueprint $table) {
             $table->id();
-            $table->string('scomp_id')->nullable()->unique();
             $table->unsignedBigInteger('criticality_id')->nullable();
 
             $table->string('name');
             $table->longText('description')->nullable();
-            $table->enum('type', ['improvement', 'risk', 'bug']);
-            $table->enum('status', ['open', 'done']);
+            $table->enum('type', \Swark\DataModel\Domain\Model\Auditing\FindingType::toMap());
+            $table->enum('status', \Swark\DataModel\Domain\Model\Auditing\Status::toMap());
             $table->longText('impact')->nullable();
             $table->longText('known_deficits')->nullable();
             $table->tinyInteger('probability')->nullable();
             $table->tinyInteger('extend_of_damage')->nullable();
-            $table->enum('strategy', collect(\Swark\DataModel\Auditing\Domain\Model\TreatmentStrategy::cases())->map(fn($item) => \Illuminate\Support\Str::lower($item->value))->toArray());
+            $table->enum('strategy', \Swark\DataModel\Domain\Model\Auditing\TreatmentStrategy::toMap());
 
             $table->timestamps();
             $table->softDeletesDatetime();
@@ -298,7 +382,6 @@ QUERY;
         Schema::create('question', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             $table->longText('description')->nullable();
 
             $table->timestamps();
@@ -335,20 +418,17 @@ QUERY;
         Schema::create('metric', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             $table->longText('description')->nullable();
-            $table->enum('type', ['boolean', 'decimal', 'percentage', 'time_seconds', 'time_minutes', 'time_hours', 'time_days']);
+            $table->enum('type', \Swark\DataModel\Domain\Model\Governance\Kpi\MetricType::toMap());
             // precision for percentage/decimal
             $table->tinyInteger('precision')->default(0);
             // what the goal value should be in the end: higher (yes), lower(no)
-            $table->enum('goal_direction', ['higher', 'lower']);
+            $table->enum('goal_direction', \Swark\DataModel\Domain\Model\Governance\Kpi\GoalDirection::toMap());
             // can be measured as a KPI
             $table->boolean('is_measurable')->default(true);
             // can be used as a parameter for defining Business Continuity-related values for systems
             $table->boolean('is_system_parameter')->default(false);
         });
-
-        static::registerTriggersFor('metric');
 
         Schema::create('kpi', function (Blueprint $table) {
             $table->id();
@@ -376,7 +456,6 @@ QUERY;
         Schema::create('measurement_period', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->unique();
             $table->longText('description')->nullable();
             $table->date('begin_at');
             $table->date('end_at')->nullable();
@@ -403,9 +482,8 @@ QUERY;
         Schema::create('action', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable()->unique();
             $table->longText('description')->nullable();
-            $table->enum('status', ['open', 'in_progress', 'in_review', 'done']);
+            $table->enum('status', \Swark\DataModel\Domain\Model\Auditing\Status::toMap());
             $table->date('begin_at')->nullable();
             $table->date('end_at')->nullable();
 
@@ -428,7 +506,6 @@ QUERY;
         Schema::create('organization', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             // is internal organization or service provider and not us
             $table->boolean('is_internal')->default(false);
             // organization is vendor
@@ -438,8 +515,7 @@ QUERY;
             // organization is service provider
             $table->boolean('is_managed_service_provider')->default(false);
             // NIS2: importance of organization
-            $table->enum('importance', ['normal', 'high', 'very_high'])->nullable();
-
+            $table->enum('importance', \Swark\DataModel\Domain\Model\Business\DependencyDegree::toMap())->nullable();
 
             $table->timestamps();
             $table->softDeletesDatetime();
@@ -448,35 +524,27 @@ QUERY;
         // types like logical_zone, vlan, baremetal, host, cluster, application_instance, managed_subscription can belong to organizations
         Schema::create('associated_with_organization', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->morphs('associatable', 'association_idx');
             $table->unsignedBigInteger('organization_id');
-            $table->enum('role', ['owner', 'manager', 'customer'])->nullable();
+            $table->enum('role', \Swark\DataModel\Domain\Model\Business\AssociatedRole::toMap())->nullable();
         });
-
-        static::registerTriggersFor('organization');
 
         // physical person, role or user group
         Schema::create('actor', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
         });
-
-        static::registerTriggersFor('actor');
 
         Schema::create('technology', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable()->unique();
-            $table->string('type')->default(\Swark\DataModel\Governance\Domain\Model\TechnologyType::OTHER->value);
+            $table->string('type')->default(\Swark\DataModel\Domain\Model\Governance\TechnologyType::OTHER->value);
         });
-
-        static::registerTriggersFor('technology');
 
         Schema::create('technology_version', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable();
             $table->boolean('is_latest')->default(false);
 
             $table->unsignedBigInteger('technology_id');
@@ -487,7 +555,6 @@ QUERY;
         Schema::create('resource_type', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable()->unique();
 
             $table->unsignedBigInteger('technology_version_id')->nullable();
             $table->foreign('technology_version_id')->references('id')->on('technology_version');
@@ -497,7 +564,6 @@ QUERY;
         Schema::create('artifact_type', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->unique()->nullable();
 
             $table->timestamps();
             $table->softDeletesDatetime();
@@ -506,7 +572,6 @@ QUERY;
         Schema::create('architecture_type', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->unique()->nullable();
 
             $table->timestamps();
             $table->softDeletesDatetime();
@@ -516,7 +581,6 @@ QUERY;
         Schema::create('data_classification', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             $table->longText('description')->nullable();
             $table->smallInteger('position')->default(0);
         });
@@ -525,7 +589,6 @@ QUERY;
         Schema::create('protection_goal', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             $table->longText('description')->nullable();
         });
 
@@ -533,14 +596,12 @@ QUERY;
         Schema::create('protection_goal_level', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id');
             $table->longText('description')->nullable();
             $table->smallInteger('position')->default(0);
 
             $table->unsignedBigInteger('protection_goal_id');
 
             $table->unique(['name', 'protection_goal_id'], 'unq_protection_goal_level_name');
-            $table->unique(['scomp_id', 'protection_goal_id'], 'unq_protection_goal_level_scomp_id');
             $table->foreign('protection_goal_id')->references('id')->on('protection_goal');
         });
 
@@ -549,7 +610,6 @@ QUERY;
             $table->id();
             $table->string('name')->unique();
             $table->longText('description')->nullable();
-            $table->string('scomp_id')->nullable()->unique();
             $table->unsignedBigInteger('data_classification_id')->nullable();
 
             $table->foreign('data_classification_id')->references('id')->on('data_classification');
@@ -569,14 +629,13 @@ QUERY;
         Schema::create('logical_layer', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
         });
 
         // NETWORK
         Schema::create('vlan', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('number');
-            $table->string('scomp_id')->nullable()->unique();
         });
 
         Schema::create('nic', function (Blueprint $table) {
@@ -594,11 +653,14 @@ QUERY;
 
         Schema::create('ip_network', function (Blueprint $table) {
             $table->id();
-            $table->string('scomp_id')->nullable()->unique();
-            $table->enum('type', [4, 6]);
-            $table->binary('network', length: 16);
+            $table->enum('type', \Swark\DataModel\Domain\Model\InformationTechnology\Network\IpVersion::toMap());
+            $table->string('network');
+            // we need the string representation and binary. Laravel does not allow to make lookups via casts
+            $table->binary('network_bin', length: 16);
             // don't use prefix as subnets can have holes in it
-            $table->binary('network_mask', length: 16);
+            $table->string('network_mask');
+            // we need the string representation and binary. Laravel does not allow to make lookups via casts
+            $table->binary('network_mask_bin', length: 16);
             // postpone gateway as table does not exist yet
             $table->longText('description')->nullable();
 
@@ -610,14 +672,16 @@ QUERY;
         Schema::create('ip_address', function (Blueprint $table) {
             $table->id();
 
-            $table->binary('address', length: 16);
+            $table->string('address');
+            // we need the string representation and binary. Laravel does not allow to make lookups via casts
+            $table->binary('address_bin', length: 16);
             $table->unsignedBigInteger('ip_network_id')->nullable();
             $table->longText('description')->nullable();
 
             $table->foreign('ip_network_id')->references('id')->on('ip_network');
         });
 
-        Schema::table('ip_network', function(Blueprint $table) {
+        Schema::table('ip_network', function (Blueprint $table) {
             $table->unsignedBigInteger('gateway_id')->nullable();
 
             $table->foreign('gateway_id')->references('id')->on('ip_address');
@@ -672,15 +736,13 @@ QUERY;
         Schema::create('stage', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
         });
 
         Schema::create('software', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable()->unique();
 
-            $table->enum('usage_type', collect(UsageType::cases())->map(fn($item) => \Illuminate\Support\Str::lower($item->value))->toArray());
+            $table->enum('usage_type', UsageType::toMap());
             $table->boolean('is_virtualizer')->default(false);
             $table->boolean('is_operating_system')->default(false);
             $table->boolean('is_runtime')->default(false);
@@ -704,12 +766,9 @@ QUERY;
             $table->foreign('artifact_type_id')->references('id')->on('artifact_type');
         });
 
-        static::registerTriggersFor('software');
-
         Schema::create('source_provider', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             // how can the source be resolved? e.g. http, http+git, artifacthub, ...
             $table->string('type');
             // root path to this source provider. e.g. github.com
@@ -717,8 +776,6 @@ QUERY;
             // configuration options
             $table->json('options')->nullable();
         });
-
-        static::registerTriggersFor('source_provider');
 
         Schema::create('source', function (Blueprint $table) {
             $table->id();
@@ -740,7 +797,6 @@ QUERY;
         Schema::create('release', function (Blueprint $table) {
             $table->id();
             $table->string('version');
-            $table->string('scomp_id')->nullable();
             $table->boolean('is_latest')->default(false);
             // matches any release for this software
             $table->boolean('is_any')->default(false);
@@ -810,15 +866,12 @@ QUERY;
         Schema::create('service', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable();
             $table->longText('description')->nullable();
 
             $table->unsignedBigInteger('component_id');
             $table->foreign('component_id')->references('id')->on('component');
             $table->unique(['name', 'component_id']);
         });
-
-        static::registerTriggersFor('service');
 
         Schema::create('protocol_stack', function (Blueprint $table) {
             $table->id();
@@ -863,7 +916,6 @@ QUERY;
             $table->id();
             $table->string('name')->unique();
             $table->longText('description')->nullable();
-            $table->string('scomp_id')->nullable()->unique();
             $table->unsignedBigInteger('logical_zone_id')->nullable();
             $table->unsignedBigInteger('stage_id')->nullable();
             $table->unsignedBigInteger('business_criticality_id')->nullable();
@@ -877,8 +929,6 @@ QUERY;
             $table->foreign('business_criticality_id')->references('id')->on('criticality');
             $table->foreign('infrastructure_criticality_id')->references('id')->on('criticality');
         });
-
-        static::registerTriggersFor('system');
 
         Schema::create('system_parameter', function (Blueprint $table) {
             $table->id();
@@ -942,7 +992,6 @@ QUERY;
         Schema::create('region', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable()->unique();
 
             $table->unsignedBigInteger('managed_service_provider_id');
             $table->foreign('managed_service_provider_id')->references('id')->on('organization');
@@ -953,20 +1002,17 @@ QUERY;
         Schema::create('availability_zone', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable();
 
             $table->unsignedBigInteger('region_id');
             $table->foreign('region_id')->references('id')->on('region');
 
             $table->unique(['name', 'region_id'], 'unq_availability_zone_name');
-            $table->unique(['scomp_id', 'region_id'], 'unq_availability_zone_scomp_id');
         });
 
         // e.g. Atlassian Jira, AWS Glacier
         Schema::create('managed_offer', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('scomp_id')->nullable();
 
             $table->unsignedBigInteger('managed_service_provider_id');
             $table->unsignedBigInteger('software_id')->nullable();
@@ -978,16 +1024,11 @@ QUERY;
             $table->foreign('software_id')->references('id')->on('software');
 
             $table->unique(['name', 'managed_service_provider_id'], 'unq_managed_offer_name');
-            $table->unique(['scomp_id', 'managed_service_provider_id'], 'unq_managed_offer_scomp_id');
         });
-
-        static::registerTriggersFor('managed_offer', 'offer');
-
 
         Schema::create('managed_account', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('scomp_id')->nullable()->unique();
 
             $table->unsignedBigInteger('managed_service_provider_id');
 
@@ -999,12 +1040,9 @@ QUERY;
             $table->unique(['name', 'managed_service_provider_id']);
         });
 
-        static::registerTriggersFor('managed_account', 'account');
-
         Schema::create('managed_subscription', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable();
             $table->longText('description')->nullable();
 
             $table->unsignedBigInteger('managed_offer_id');
@@ -1023,22 +1061,16 @@ QUERY;
             $table->foreign('release_id')->references('id')->on('release');
 
             $table->unique(['name', 'managed_offer_id', 'managed_account_id'], 'unq_managed_subscription_name');
-            $table->unique(['scomp_id', 'managed_offer_id', 'managed_account_id'], 'unq_managed_subscription_scomp_id');
         });
-
-        static::registerTriggersFor('managed_subscription', 'subscription');
 
         Schema::create('baremetal', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable()->unique();
             $table->longText('description')->nullable();
 
             $table->timestamps();
             $table->softDeletesDatetime();
         });
-
-        static::registerTriggersFor('baremetal');
 
         Schema::create('managed_baremetal', function (Blueprint $table) {
             $table->id();
@@ -1057,12 +1089,11 @@ QUERY;
         Schema::create('cluster', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
 
             // cluster is targeted for this software id and/or software version
             $table->unsignedBigInteger('target_release_id')->nullable();
 
-            $table->enum('mode', array_values(ClusterMode::toMap()))->nullable();
+            $table->enum('mode', ClusterMode::toMap())->nullable();
             $table->string('virtual_name')->nullable();
             // stage
             $table->unsignedBigInteger('stage_id')->nullable();
@@ -1073,8 +1104,6 @@ QUERY;
             $table->foreign('target_release_id')->references('id')->on('release');
             $table->foreign('stage_id')->references('id')->on('stage');
         });
-
-        static::registerTriggersFor('cluster');
 
         Schema::create('ip_network_assigned', function (Blueprint $table) {
             $table->id();
@@ -1111,7 +1140,8 @@ QUERY;
 
             $table->unsignedBigInteger('cluster_id');
 
-            // member type can be one of: Managed baremetal, Application instance, Runtime, Virtualized Host
+            // member type can be one of: Application instance, Runtime, Virtualized Host
+            // A member can *not* be a Baremetal instance. Only software can be part of a cluster.
             $table->morphs('member');
 
             // cluster mode: is_primary can be different from is_active if a failover happened
@@ -1143,7 +1173,6 @@ QUERY;
         Schema::create('deployment', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('scomp_id')->nullable()->unique();
             $table->unsignedBigInteger('release_train_id')->nullable();
             $table->unsignedBigInteger('stage_id')->nullable();
 
@@ -1178,15 +1207,19 @@ QUERY;
         Schema::create('host', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->nullable()->unique();
 
             // host operating system environment
             $table->unsignedBigInteger('operating_system_id');
             // provide virtualization with this software
             $table->unsignedBigInteger('virtualizer_id')->nullable();
-            // if not null, then this host run on the virtualization environment of the parent host id.
+            // UC1: This host is part of a virtualized cluster and the parent host is *not* relevant:
+            // This relationship is then realized inside the cluster_member table
+            // UC2: It is relevant on which virtualization host *this* host runs:
+            // if not null, then this host runs EXACTLY in the virtualization environment of the parent host id.
             // the parent_host_id must have virtualizer_id != null
             $table->unsignedBigInteger('parent_host_id')->nullable();
+            // let's assume that by default the host has an affinity to run on the parent's host
+            $table->boolean('has_parent_host_affinity')->default(true);
 
             // can be null if host is in virtualized environment
             $table->unsignedBigInteger('baremetal_id')->nullable();
@@ -1199,8 +1232,6 @@ QUERY;
             $table->foreign('parent_host_id')->references('id')->on('host');
             $table->foreign('baremetal_id')->references('id')->on('baremetal');
         });
-
-        static::registerTriggersFor('host');
 
         // Databases, Queues, ...
         Schema::create('resource', function (Blueprint $table) {
@@ -1219,7 +1250,6 @@ QUERY;
         Schema::create('runtime', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('scomp_id')->unique();
 
             // host operating system environment
             $table->unsignedBigInteger('host_id');
@@ -1233,11 +1263,8 @@ QUERY;
             $table->foreign('release_id')->references('id')->on('release');
         });
 
-        static::registerTriggersFor('runtime');
-
         Schema::create('application_instance', function (Blueprint $table) {
             $table->id();
-            $table->string('scomp_id')->nullable()->unique();
             // an instance must be pin-pointed to a specific software release
             $table->unsignedBigInteger('release_id');
             // an instance can be inside a stage
@@ -1261,12 +1288,9 @@ QUERY;
             $table->foreign('system_id')->references('id')->on('system');
         });
 
-        static::registerTriggersFor('application_instance', nameColumn: 'scomp_id');
-
         Schema::create('relationship_type', function (Blueprint $table) {
             $table->id();
 
-            $table->string('scomp_id')->nullable()->unique();
             $table->string('name');
             $table->string('source_name');
             $table->string('target_name');
@@ -1277,8 +1301,6 @@ QUERY;
 
             $table->boolean('is_restricting_types')->default(false);
         });
-
-        static::registerTriggersFor('relationship_type');
 
         Schema::create('relationship_type_constraint', function (Blueprint $table) {
             $table->id();
@@ -1298,7 +1320,7 @@ QUERY;
             $table->unsignedBigInteger('source_id');
             $table->string('source_name')->nullable();
 
-            $table->enum('direction', ['unidirectional', 'bidirectional']);
+            $table->enum('direction', \Swark\DataModel\Domain\Model\Meta\Direction::toMap());
 
             // target class: ApplicationInstance, CloudOffering
             $table->string('target_type')->nullable();

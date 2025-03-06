@@ -18,41 +18,48 @@ use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Spatie\Navigation\Navigation;
 use Spatie\Navigation\Section;
-use Swark\Cms\Cms;
-use Swark\Cms\Content\NotFoundResponder;
-use Swark\Cms\Events\DelegatingHooksRegistrar;
-use Swark\Cms\Events\RenderContentOnHooksRegistrar;
-use Swark\Cms\Page\PageFactory;
-use Swark\Cms\Store\DatabaseStore;
-use Swark\Cms\Store\FilesystemStore;
-use Swark\Cms\Store\Search\Searchable;
-use Swark\Console\Commands\ImportKubernetesCluster;
-use Swark\Console\Commands\ImportStamdataCommand;
-use Swark\Console\Commands\IngestFlatStructure;
-use Swark\Console\Commands\ProcessBatchDependencies;
-use Swark\Console\Commands\ReviewKubernetesTokensCommand;
-use Swark\Console\Commands\UpdateHelmVersions;
-use Swark\Content\Domain\Service\MarkdownService;
-use Swark\Content\Infrastructure\Facades\Markdown;
-use Swark\DataModel\Auditing\Domain\Entity\Policy;
-use Swark\DataModel\Kernel\Infrastructure\UI\FilamentHelper;
-use Swark\DataModel\Meta\Domain\Entity\ResourceType;
-use Swark\DataModel\ModelTypes;
+use Swark\Cms\Application\Cms;
+use Swark\Cms\Domain\Factory\PageFactory;
+use Swark\Cms\Domain\Model\Content\NotFoundResponder;
+use Swark\Cms\Domain\Model\Store\Search\Searchable;
+use Swark\Cms\Infrastructure\Exchange\Database\DatabaseContentHandler;
+use Swark\Cms\Infrastructure\Exchange\Database\ImportableDatabaseContent;
+use Swark\Cms\Infrastructure\Store\DatabaseStore;
+use Swark\Cms\Infrastructure\Store\FilesystemStore;
+use Swark\Cms\Presenter\Console\ImportContentCommand;
+use Swark\DataModel\Domain\Service\Content\MarkdownService;
+use Swark\DataModel\Infrastructure\Eloquent\Model\Auditing\Policy;
+use Swark\DataModel\Infrastructure\Eloquent\Model\Meta\ResourceType;
+use Swark\DataModel\Infrastructure\Eloquent\Model\ModelTypes;
+use Swark\DataModel\Infrastructure\Exchange\CompositeKeyContainer;
+use Swark\DataModel\Infrastructure\Exchange\Database\DatabaseRegulationHandler;
+use Swark\DataModel\Infrastructure\Exchange\Database\ImportableDatabaseRegulation;
+use Swark\DataModel\Infrastructure\Exchange\Excel\DataModelExcelFileFactory;
+use Swark\DataModel\Presenter\Console\ImportDataModelCommand;
+use Swark\DataModel\Presenter\Console\ImportKubernetesCluster;
+use Swark\DataModel\Presenter\Console\IngestFlatStructure;
+use Swark\DataModel\Presenter\Console\ProcessBatchDependencies;
+use Swark\DataModel\Presenter\Console\ReviewKubernetesTokensCommand;
+use Swark\DataModel\Presenter\Console\UpdateHelmVersions;
+use Swark\DataModel\Presenter\UI\FilamentHelper;
+use Swark\Frontend\Application\Components\Block\Content;
+use Swark\Frontend\Application\Components\Block\Resolve;
+use Swark\Frontend\Application\Components\Chapter\Chapter;
+use Swark\Frontend\Application\Components\Chapter\ChapterHeader;
+use Swark\Frontend\Application\Components\Chapter\Label;
+use Swark\Frontend\Application\Components\Criticality;
+use Swark\Frontend\Application\Components\Diagram\Diagram;
+use Swark\Frontend\Application\Components\Menu;
+use Swark\Frontend\Application\Components\MermaidJs;
+use Swark\Frontend\Application\Components\Outline\Outline;
+use Swark\Frontend\Application\Components\Plantuml;
+use Swark\Frontend\Application\Components\Plotly;
+use Swark\Frontend\Infrastructure\Hooking\DelegatingHooksRegistrar;
+use Swark\Frontend\Infrastructure\Hooking\RenderContentOnHooksRegistrar;
 use Swark\Frontend\Infrastructure\View\RoutableConfigurationItem;
 use Swark\Frontend\Infrastructure\View\RoutableViewFinder;
-use Swark\Frontend\UI\Components\Block\Content;
-use Swark\Frontend\UI\Components\Block\Resolve;
-use Swark\Frontend\UI\Components\Chapter\Chapter;
-use Swark\Frontend\UI\Components\Chapter\ChapterHeader;
-use Swark\Frontend\UI\Components\Chapter\Label;
-use Swark\Frontend\UI\Components\Criticality;
-use Swark\Frontend\UI\Components\Diagram\Diagram;
-use Swark\Frontend\UI\Components\Menu;
-use Swark\Frontend\UI\Components\MermaidJs;
-use Swark\Frontend\UI\Components\Outline\Outline;
-use Swark\Frontend\UI\Components\Plantuml;
-use Swark\Frontend\UI\Components\Plotly;
 use Swark\IdP\Presenter\Console\CreateSwarkUser;
+use Swark\Kernel\Infrastructure\Facades\Markdown;
 use TorMorten\Eventy\Facades\Eventy;
 
 class SwarkServiceProvider extends PackageServiceProvider
@@ -97,7 +104,8 @@ class SwarkServiceProvider extends PackageServiceProvider
                 Resolve::class,
             )
             ->hasConsoleCommands(
-                ImportStamdataCommand::class,
+                ImportContentCommand::class,
+                ImportDataModelCommand::class,
                 IngestFlatStructure::class,
                 ImportKubernetesCluster::class,
                 UpdateHelmVersions::class,
@@ -125,12 +133,19 @@ class SwarkServiceProvider extends PackageServiceProvider
             return ResourceType::where('id', $value)->firstOrFail();
         });
 
+        $this->configureDataModel();
         $this->configureCms();
         $this->configureViews();
         $this->configureEloquent();
         $this->enableDatabaseLogging();
         $this->configureLogging();
         $this->configureFilament();
+    }
+
+    protected function configureDataModel(): void {
+
+        $this->app->bind(CompositeKeyContainer::class, fn() => new CompositeKeyContainer());
+        $this->app->singleton(DataModelExcelFileFactory::class, fn() => new DataModelExcelFileFactory());
     }
 
     /**
@@ -144,6 +159,8 @@ class SwarkServiceProvider extends PackageServiceProvider
             return new FilesystemStore(config('swark.content.path'));
         });
 
+        $this->app->bind(ImportableDatabaseContent::class, fn() => new DatabaseContentHandler());
+        $this->app->bind(ImportableDatabaseRegulation::class, fn() => new DatabaseRegulationHandler());
         $this->app->singleton(PageFactory::class, fn() => new PageFactory());
 
         $this->app->when(Cms::class)
@@ -186,7 +203,7 @@ class SwarkServiceProvider extends PackageServiceProvider
                 $app->make('content.finder'),
                 $app->make(RoutableConfigurationItem::class),
                 $app['config']['swark.events.hookable'],
-                );
+            );
         });
 
         // If present, render local files based upon the current shown configuration item, chapter and hook
