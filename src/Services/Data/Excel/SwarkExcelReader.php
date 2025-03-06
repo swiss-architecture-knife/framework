@@ -78,10 +78,10 @@ class SwarkExcelReader extends Reader
     /**
      * Custom reader logic to support sheet imports wher one sheet is imported mulitple times due to dependencies.
      *
-     * @param  object  $import
-     * @param  string|UploadedFile  $filePath
-     * @param  string|null  $readerType
-     * @param  string|null  $disk
+     * @param object $import
+     * @param string|UploadedFile $filePath
+     * @param string|null $readerType
+     * @param string|null $disk
      * @return \Illuminate\Foundation\Bus\PendingDispatch|$this
      *
      * @throws NoTypeDetectedException
@@ -136,10 +136,10 @@ class SwarkExcelReader extends Reader
     }
 
     /**
-     * @param  object  $import
-     * @param  string|UploadedFile  $filePath
-     * @param  string|null  $readerType
-     * @param  string  $disk
+     * @param object $import
+     * @param string|UploadedFile $filePath
+     * @param string|null $readerType
+     * @param string $disk
      * @return IReader
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
@@ -162,8 +162,8 @@ class SwarkExcelReader extends Reader
             Cell::setValueBinder($import);
         }
 
-        $fileExtension     = pathinfo($filePath, PATHINFO_EXTENSION);
-        $temporaryFile     = $shouldQueue ? $this->temporaryFileFactory->make($fileExtension) : $this->temporaryFileFactory->makeLocal(null, $fileExtension);
+        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $temporaryFile = $shouldQueue ? $this->temporaryFileFactory->make($fileExtension) : $this->temporaryFileFactory->makeLocal(null, $fileExtension);
         $this->currentFile = $temporaryFile->copyFrom(
             $filePath,
             $disk
@@ -185,13 +185,18 @@ class SwarkExcelReader extends Reader
         $this->setDefaultValueBinder();
 
         // Force garbage collecting
-        unset($this->sheetImports, $this->spreadsheet);
+        /* @phpstan-ignore unset.possiblyHookedProperty */
+        unset($this->sheetImports);
+        /* @phpstan-ignore unset.possiblyHookedProperty */
+        unset($this->spreadsheet);
 
         $this->currentFile->delete();
     }
 }
 
-readonly class SheetToImport {
-    public function __construct(public int|string $indexOrNameOfSheet, public object $sheet) {
+readonly class SheetToImport
+{
+    public function __construct(public int|string $indexOrNameOfSheet, public object $sheet)
+    {
     }
 }

@@ -31,7 +31,7 @@
         "laravel/pint": "^1.0",
         "mockery/mockery": "^1.4.4",
         "orchestra/testbench-core": "^9.9.4",
-        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan": "2.1.7",
         "phpunit/phpunit": "^10.5.35|^11.3.6|^12.0.1"
     },
     "autoload": {
