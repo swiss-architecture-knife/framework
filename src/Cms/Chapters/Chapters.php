@@ -2,12 +2,7 @@
 
 namespace Swark\Cms\Chapters;
 
-use Illuminate\Support\Facades\Log;
-use PHPUnit\Event\Runtime\PHPUnit;
-use RecursiveArrayIterator;
-use RecursiveIterator;
 use RecursiveIteratorIterator;
-use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
 class Chapters
 {

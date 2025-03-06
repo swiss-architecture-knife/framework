@@ -14,45 +14,69 @@ use Swark\DataModel\Content\Domain\Entity\Content as ContentInDatabase;
 
 class DatabaseStore implements \Swark\Cms\Store\Search\Searchable
 {
-    public function search(Search $search): \Generator
-    {
-        // TODO Caching of queries
-        $r = new ContentInDatabase();
-        $t = [];
+    private array $databaseCache = [];
+
+    /**
+     * Load content from either cache or if the cache misses, load from database
+     *
+     * @param Search $search
+     * @return array|mixed
+     */
+    private function loadFromCacheOrDatabase(Search $search) {
+        $contentInDatabaseModelQuery = new ContentInDatabase();
+        $searchedResources = [];
 
         /** @var Expression $path */
         foreach ($search as $expression) {
             switch ($expression->queryType) {
                 case ExpressionType::EXACT:
-                    $r = $r->where('scomp_id', $expression->resourceName->full);
-                    $t[] = $expression->resourceName->full;
+                    $contentInDatabaseModelQuery = $contentInDatabaseModelQuery->where('scomp_id', $expression->resourceName->full);
+                    $searchedResources[] = $expression->resourceName->full;
                     break;
                 case ExpressionType::IN:
-                    $databaseQuery = $expression->resourceName->full . '_';
-                    $r = (sizeof($t) == 1) ? $r->whereLike('scomp_id', $databaseQuery) : $r->orWhereLike('scomp_id', $databaseQuery);
-                    $t[] = $databaseQuery;
+                    $searchForResource = $expression->resourceName->full . '_';
+                    $contentInDatabaseModelQuery = (sizeof($searchedResources) == 1) ? $contentInDatabaseModelQuery->whereLike('scomp_id', $searchForResource) : $contentInDatabaseModelQuery->orWhereLike('scomp_id', $searchForResource);
+                    $searchedResources[] = $searchForResource;
                     break;
             }
         }
 
-        yo_debug("Loading content from database for '%s'", [implode(',', $t)]);
-        $total = 0;
+        $uniqueSearchKey = implode(',', $searchedResources);
 
-        /** @var ContentInDatabase $model */
-        foreach ($r->get() as $model) {
-            yield new Content(
-                resourceName: ResourceName::of($model->scomp_id),
-                createdAt: $model->created_at,
-                body: Body::of($model->content, $model->contentType()),
-                source: Source::of('database', $model->scomp_id),
-                changes: Changes::none(),
-                // TODO
-                updatedAt: $model->updated_at,
-            );
+        if (!isset($this->databaseCache[$uniqueSearchKey])) {
+            $items= [];
 
-            $total++;
+            yo_debug("Loading content from database for '%s'", [$uniqueSearchKey]);
+            $total = 0;
+
+            /** @var ContentInDatabase $model */
+            foreach ($contentInDatabaseModelQuery->get() as $model) {
+                $items[] = new Content(
+                    resourceName: ResourceName::of($model->scomp_id),
+                    createdAt: $model->created_at,
+                    body: Body::of($model->content, $model->contentType()),
+                    source: Source::of('database', $model->scomp_id),
+                    changes: Changes::none(),
+                    // TODO
+                    updatedAt: $model->updated_at,
+                );
+
+                $total++;
+            }
+
+            yo_info("Total content returned from database: %d", [$total]);
+
+            $this->databaseCache[$uniqueSearchKey] = $items;
         }
 
-        yo_info("Total Content returned from database: %d", [$total]);
+        return $this->databaseCache[$uniqueSearchKey];
+    }
+
+    public function search(Search $search): \Generator
+    {
+        /** @var Content $content */
+        foreach ($this->loadFromCacheOrDatabase($search) as $content) {
+            yield $content;
+        }
     }
 }

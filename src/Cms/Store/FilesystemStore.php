@@ -3,11 +3,9 @@
 namespace Swark\Cms\Store;
 
 use Carbon\Carbon;
-use Illuminate\Support\HtmlString;
 use Swark\Cms\Content;
 use Swark\Cms\Content\OnDemandBody;
 use Swark\Cms\Meta\Changes;
-use Swark\Cms\Meta\Path;
 use Swark\Cms\ResourceName;
 use Swark\Cms\Source;
 use Swark\Cms\Store\Search\Search;
@@ -34,7 +32,7 @@ class FilesystemStore implements Searchable, Suggestable
             'config' => '\.(y[a]?ml)+'
         ];
 
-        return $filesets[$fileset] ?? $fileset[$defaultFileset];
+        return $filesets[$fileset] ?? $filesets[$defaultFileset];
     }
 
     public function suggest(Search $search): \Generator
@@ -51,22 +49,48 @@ class FilesystemStore implements Searchable, Suggestable
         }
     }
 
+    private array $pathCache = [];
+
+    /**
+     * Creates a new iterator for the given path or none if the path does not exist
+     * @param Expression $searchInPath
+     * @return \RecursiveIteratorIterator|null
+     */
+    private function maybeCreateIterator(Expression $searchInPath): \RecursiveIteratorIterator|null
+    {
+        $subPath = $this->basePath . '/' . $searchInPath->resourceName->parentToPath();
+
+        // we cannot store null as values of hashmap entry, so we have to use false
+        $toRecursiveIteratorOrNull = fn($item) => $item === false ? null : $item;
+
+        if (!isset($this->pathCache[$subPath])) {
+            $recursiveIteratorIteratorOrNull = match (is_dir($subPath)) {
+                true => new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($subPath)),
+                false => false
+            };
+
+            if ($recursiveIteratorIteratorOrNull) {
+                yo_debug('Content available in path: %s (%s)', [$subPath, $searchInPath->resourceName]);
+            } else {
+                yo_debug('Content directory "%s" does not exist', [$subPath]);
+            }
+
+            $this->pathCache[$subPath] = $recursiveIteratorIteratorOrNull;
+        }
+
+        return $toRecursiveIteratorOrNull($this->pathCache[$subPath]);
+    }
+
     public function search(Search $search): \Generator
     {
         /** @var Expression $searchInPath */
         foreach ($search as $searchInPath) {
-            $subPath = $this->basePath . '/' . $searchInPath->resourceName->parentToPath();
-            yo_info('Searching for content in path: %s (%s)', [$subPath, $searchInPath->resourceName]);
-            $rec = null;
+            $iterator = $this->maybeCreateIterator($searchInPath);
 
-            try {
-                $rec = new \RecursiveDirectoryIterator($subPath);
-            } catch (\Exception $e) {
-                yo_error($e->getMessage());
+            if (!$iterator) {
                 continue;
             }
 
-            $ite = new \RecursiveIteratorIterator($rec);
             $fileRegex = $this->filesetExpression($searchInPath->resourceName->fileset);
 
             switch ($searchInPath->queryType) {
@@ -80,7 +104,7 @@ class FilesystemStore implements Searchable, Suggestable
 
             yo_info($regPattern);
 
-            $files = new \RegexIterator($ite, $regPattern, \RegexIterator::GET_MATCH);
+            $files = new \RegexIterator($iterator, $regPattern, \RegexIterator::GET_MATCH);
 
             foreach ($files as $file) {
                 yo_info('File found for URL %s at %s ', [$file[1], $file[0]]);

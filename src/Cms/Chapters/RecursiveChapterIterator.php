@@ -2,10 +2,7 @@
 
 namespace Swark\Cms\Chapters;
 
-use RecursiveArrayIterator;
 use RecursiveIterator;
-use RecursiveIteratorIterator;
-use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
 class RecursiveChapterIterator implements RecursiveIterator
 {
