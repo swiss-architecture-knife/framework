@@ -30,6 +30,7 @@ class BusinessPanelProvider extends PanelProvider
             ->brandName("Business")
             ->id('business')
             ->path('admin/business')
+            ->login()
             ->colors([
                 'primary' => Color::Fuchsia,
             ])

@@ -30,6 +30,7 @@ class CompliancePanelProvider extends PanelProvider
             ->brandName('Compliance')
             ->id('compliance')
             ->path('admin/compliance')
+            ->login()
             ->colors([
                 'primary' => Color::Rose,
             ])
