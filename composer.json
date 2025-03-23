@@ -7,7 +7,7 @@
     "require": {
         "php": "^8.4",
         "composer/semver": "^3.4",
-        "filament/filament": "^3.2",
+        "filament/filament": "^3.3.5",
         "guava/filament-nested-resources": "^1.2",
         "guzzlehttp/guzzle": "^7.2",
         "jawira/plantuml": "^1.2024",
