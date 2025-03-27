@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
+use Swark\DataModel\Domain\Model\SoftwareArchitecture\UsageType;
 use Swark\DataModel\Infrastructure\Aspects\HasC4ArchitectureRelations;
 use Swark\DataModel\Infrastructure\Aspects\HasName;
 use Swark\DataModel\Infrastructure\Eloquent\Model\Business\Organization;
@@ -36,6 +37,10 @@ class Software extends IsKnownConfigurationItem
         'logical_zone_id',
         'vendor_id',
         'artifact_type_id',
+    ];
+
+    protected $attributes = [
+        'usage_type' => UsageType::CONSOLE->value
     ];
 
     protected $casts = [
@@ -142,7 +147,8 @@ class Software extends IsKnownConfigurationItem
      * @param $namedType
      * @return mixed
      */
-    public static function likeName($name, $namedType = 'software_name') {
+    public static function likeName($name, $namedType = 'software_name')
+    {
         $query = <<<QUERY
 SELECT s.* FROM (
     SELECT sw.*, 'ci_exact_type_and_name' AS name_source, 1.1 AS name_ranking, cin.name AS name_match FROM software sw

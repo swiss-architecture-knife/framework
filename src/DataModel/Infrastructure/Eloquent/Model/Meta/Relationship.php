@@ -4,6 +4,7 @@ namespace Swark\DataModel\Infrastructure\Eloquent\Model\Meta;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Swark\DataModel\Domain\Model\Meta\Direction;
 
 class Relationship extends Model
 {
@@ -21,7 +22,12 @@ class Relationship extends Model
         'relationship_type_id',
         'port',
         'protocol_stack_id',
-        'description'
+        'description',
+        'direction'
+    ];
+
+    protected $attributes = [
+        'direction' => Direction::UNIDIRECTIONAL->value
     ];
 
     public function type(): BelongsTo

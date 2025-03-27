@@ -3,6 +3,9 @@
 namespace Swark\DataModel\Infrastructure\Eloquent\Model\Auditing;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Swark\DataModel\Domain\Model\Auditing\FindingType;
+use Swark\DataModel\Domain\Model\Auditing\Status;
+use Swark\DataModel\Domain\Model\Auditing\TreatmentStrategy;
 use Swark\DataModel\Infrastructure\Aspects\HasName;
 use Swark\DataModel\Infrastructure\Eloquent\Model\Compliance\Control;
 use Swark\DataModel\Infrastructure\Eloquent\Model\Governance\Strategy\Objective;
@@ -28,6 +31,10 @@ class Action extends IsKnownConfigurationItem
     protected $casts = [
         'begin_at' => 'date',
         'end_at' => 'date',
+    ];
+
+    protected $attributes = [
+        'status' => Status::OPEN->value,
     ];
 
     public function controls(): MorphToMany

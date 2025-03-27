@@ -46,4 +46,3 @@ class RegulationsSheet extends AbstractSwarkExcelSheet implements FromGenerator,
         $this->compositeKeyContainer->set('regulation', $regulation->configurationItem->scomp_id, $regulation->id);
     }
 }
-

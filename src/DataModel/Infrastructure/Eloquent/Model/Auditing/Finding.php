@@ -4,6 +4,9 @@ namespace Swark\DataModel\Infrastructure\Eloquent\Model\Auditing;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Swark\DataModel\Domain\Model\Auditing\FindingType;
+use Swark\DataModel\Domain\Model\Auditing\Status;
+use Swark\DataModel\Domain\Model\Auditing\TreatmentStrategy;
 use Swark\DataModel\Infrastructure\Aspects\HasName;
 use Swark\DataModel\Infrastructure\Eloquent\Model\Compliance\Control;
 use Swark\DataModel\Infrastructure\Eloquent\Model\Governance\Criticality;
@@ -28,6 +31,12 @@ class Finding extends IsKnownConfigurationItem
         'extend_of_damage',
         'strategy',
         'criticality_id'
+    ];
+
+    protected $attributes = [
+        'type' => FindingType::IMPROVEMENT->value,
+        'status' => Status::OPEN->value,
+        'strategy' => TreatmentStrategy::FIX->value,
     ];
 
     public function criticality(): BelongsTo
