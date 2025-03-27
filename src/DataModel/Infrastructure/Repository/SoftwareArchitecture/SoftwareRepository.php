@@ -6,13 +6,12 @@ use Illuminate\Support\Facades\DB;
 use Swark\DataModel\Infrastructure\Repository\GroupBy;
 use Swark\DataModel\Infrastructure\Repository\GroupByTemplate;
 use Swark\DataModel\Infrastructure\Repository\MapToGroup;
+use Swark\Kernel\Infrastructure\Facades\SqlDialect;
 
 class SoftwareRepository
 {
     public function findSummary(): GroupBy
     {
-        enable_sql_full_mode();
-
         $query = <<<QUERY
 SELECT
     v.name AS vendor_name,
@@ -51,7 +50,11 @@ LEFT JOIN
     (SELECT r.software_id, COUNT(*) AS total FROM application_instance ai LEFT JOIN `release` r ON r.id = ai.release_id GROUP BY r.software_id) as total_application_instances ON total_application_instances.software_id = sw.id
 LEFT JOIN
 	    logical_zone lz ON lz.id = sw.logical_zone_id
-GROUP BY sw.id
+GROUP BY
+    sw.id,
+    total_hosts,
+    total_runtimes,
+    total_application_instances
 ORDER BY vendor_name, software_name
 QUERY;
         $rows = DB::select($query);

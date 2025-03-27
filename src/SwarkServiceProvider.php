@@ -59,6 +59,8 @@ use Swark\Frontend\Infrastructure\Hooking\RenderContentOnHooksRegistrar;
 use Swark\Frontend\Infrastructure\View\RoutableConfigurationItem;
 use Swark\Frontend\Infrastructure\View\RoutableViewFinder;
 use Swark\IdP\Presenter\Console\CreateSwarkUser;
+use Swark\Kernel\Infrastructure\Database\Dialect\MysqlDialect;
+use Swark\Kernel\Infrastructure\Database\Dialect\SqliteDialect;
 use Swark\Kernel\Infrastructure\Facades\Markdown;
 use TorMorten\Eventy\Facades\Eventy;
 
@@ -137,12 +139,13 @@ class SwarkServiceProvider extends PackageServiceProvider
         $this->configureCms();
         $this->configureViews();
         $this->configureEloquent();
-        $this->enableDatabaseLogging();
+        $this->configureDatabase();
         $this->configureLogging();
         $this->configureFilament();
     }
 
-    protected function configureDataModel(): void {
+    protected function configureDataModel(): void
+    {
 
         $this->app->bind(CompositeKeyContainer::class, fn() => new CompositeKeyContainer());
         $this->app->singleton(DataModelExcelFileFactory::class, fn() => new DataModelExcelFileFactory());
@@ -222,8 +225,20 @@ class SwarkServiceProvider extends PackageServiceProvider
         });
     }
 
-    protected function enableDatabaseLogging()
+    protected function configureDatabase()
     {
+        // configure different dialects for SQLite and MySQL, depending upon the active driver
+        $this->app->bind('sql_dialect', function ($app) {
+            $activeDatabaseDriver = DB::getConfig('driver');
+
+            return match ($activeDatabaseDriver) {
+                'sqlite' => new SqliteDialect(),
+                'mysql' => new MysqlDialect(),
+                'default' => throw new \Exception("Unsupported database driver '" . $activeDatabaseDriver . "'.")
+            };
+        });
+
+        // log SQL queries
         DB::listen(function ($query) {
             Log::info(
                 $query->sql,

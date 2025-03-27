@@ -4,17 +4,24 @@ declare(strict_types=1);
 namespace Swark\DataModel\Infrastructure\Repository\InformationTechnology;
 
 use Illuminate\Support\Facades\DB;
+use Swark\Kernel\Infrastructure\Facades\SqlDialect;
 
 class ITArchitectureRepository
 {
-
     public function createZoneMatrix(): array {
+
         $query = <<<SQL
 SELECT
 	lz.name,
     ci.scomp_id,
-    IF(COUNT(lz_allow.id) = 0, json_array(), json_arrayagg(lz_allow.name)) AS allowed,
-    IF(COUNT(lz_deny.id) = 0, json_array(), json_arrayagg(lz_deny.name)) AS denied
+    CASE
+        WHEN COUNT(lz_allow.id) = 0 THEN json_array()
+        ELSE {{::jsonGroupArray lz_allow.name}}
+    END AS allowed,
+    CASE
+        WHEN COUNT(lz_deny.id) = 0 THEN json_array()
+        ELSE {{::jsonGroupArray lz_deny.name}}
+    END AS denied
 FROM logical_zone lz
 LEFT JOIN
     configuration_item ci ON lz.id = ci.ref_id AND ci.ref_type = 'logical_zone'
@@ -29,7 +36,7 @@ LEFT JOIN
 GROUP BY lz.id, lz.name, ci.scomp_id
 ;
 SQL;
-        $rows = DB::select($query);
+        $rows = DB::select(SqlDialect::parse($query));
         $r = [];
 
         foreach ($rows as $row) {

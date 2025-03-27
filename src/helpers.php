@@ -87,14 +87,6 @@ if (!function_exists('_t')) {
     }
 }
 
-if (!function_exists('enable_sql_full_mode')) {
-    /** Sets sql_mode=only_full_group_by */
-    function enable_sql_full_mode()
-    {
-        DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
-    }
-}
-
 if (!function_exists('notify')) {
     function notify(?callable $callable, ...$args)
     {
