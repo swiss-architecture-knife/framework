@@ -2,6 +2,6 @@
 namespace Swark;
 
 class Swark {
-    const string VERSION = '0.2.2';
-    const string SHORT_HASH = 'ee27d99';
+    const string VERSION = '0.2.3';
+    const string SHORT_HASH = '7d5ef4c';
 }
