@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.2 - 2026-10-09
+
+* nothing of interest this time
+
 ## v0.2.1 - 2025-03-23
 
 * nothing of interest this time
