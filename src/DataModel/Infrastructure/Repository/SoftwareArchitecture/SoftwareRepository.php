@@ -51,7 +51,18 @@ LEFT JOIN
 LEFT JOIN
 	    logical_zone lz ON lz.id = sw.logical_zone_id
 GROUP BY
+    v.name,
+	v.id,
+	sw.name,
     sw.id,
+	ci.scomp_id,
+    crit_b.id,
+    crit_b.position,
+    crit_b.name,
+    crit_i.id,
+    crit_i.position,
+    crit_i.name,
+    lz.name,
     total_hosts,
     total_runtimes,
     total_application_instances
