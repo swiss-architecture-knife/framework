@@ -159,7 +159,13 @@ class SwarkServiceProvider extends PackageServiceProvider
     protected function configureCms()
     {
         $this->app->singleton(FilesystemStore::class, function (Application $app) {
-            return new FilesystemStore(config('swark.content.path'));
+		$contentPath = config('swark.content.path');
+
+		if (!str_starts_with($contentPath, '/')) {
+			$contentPath = base_path($contentPath);
+		}
+
+		return new FilesystemStore($contentPath);
         });
 
         $this->app->bind(ImportableDatabaseContent::class, fn() => new DatabaseContentHandler());
